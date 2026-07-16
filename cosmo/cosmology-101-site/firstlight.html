@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>First Light &amp; the CMB · Cosmology 101</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<canvas id="sky"></canvas>
+<div class="nebula"></div>
+
+<nav><div class="navin">
+  <div class="brand"><a href="index.html">◉ Cosmology<span>101</span></a></div>
+  <a class="link" href="index.html">Home</a>
+  <a class="link" href="timeline.html">Timeline</a>
+  <a class="link" href="matter.html">Dark Universe</a>
+  <a class="link" href="expansion.html">Expansion</a>
+  <a class="link" href="firstlight.html">First Light</a>
+  <a class="link" href="mysteries.html">Mysteries</a>
+  <a class="link" href="livesky.html">Live Sky</a>
+  <a class="link" href="toolkit.html">Toolkit</a>
+</div></nav>
+
+<div class="wrap phead reveal">
+  <div class="crumb"><a href="index.html">Home</a> / Chapter 4</div>
+  <h1>First Light &amp; the CMB</h1>
+  <p class="lead">The oldest light in existence is all around you right now. When the universe was 380,000 years old it cooled enough to become transparent, releasing a flash of light in every direction. Stretched by 13.8 billion years of expansion, that flash is now faint microwaves — the cosmic microwave background. It is the single richest source of information in all of cosmology.</p>
+</div>
+
+<section style="padding-top:10px">
+  <div class="wrap reveal">
+    <div class="grid g2" style="align-items:center">
+      <div>
+        <h2>A snapshot of the infant universe</h2>
+        <p class="muted">Before recombination, the cosmos was an opaque, glowing plasma — free electrons scattered light like fog scatters headlights. When atoms formed, that fog cleared instantly and the light streamed free. We call the moment we're seeing the "surface of last scattering." It's a baby photo of the universe at 380,000 years old.</p>
+        <p class="muted">That light has been traveling ever since, its wavelength stretched roughly 1,100-fold by expansion — from hot visible/infrared glow down to microwaves at just <b>2.725 K</b> above absolute zero. About 1% of the static on an old untuned analog TV was this cosmic afterglow.</p>
+        <p><a href="https://www.cosmos.esa.int/web/planck/picture-gallery" target="_blank" rel="noopener">See Planck's map of the whole sky →</a></p>
+      </div>
+      <div class="panel" style="text-align:center">
+        <svg viewBox="0 0 260 150" width="100%" style="border-radius:12px;overflow:hidden;border:1px solid var(--stroke)">
+          <rect width="260" height="150" fill="#0b0f26"/>
+          <g id="cmbdots"></g>
+          <text x="130" y="142" text-anchor="middle" fill="#9aa3c7" font-size="9">simulated CMB temperature ripples · ΔT ~ 0.00001 K</text>
+        </svg>
+        <div style="font-size:.8rem;color:var(--muted);margin-top:8px">Red = very slightly hotter/denser · Blue = slightly cooler</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>Why the tiny ripples matter so much</h2>
+    <p class="lead">The CMB is astonishingly smooth — the same temperature in every direction to one part in 100,000. But those minute variations are everything: they are the density differences that gravity later amplified into galaxies, clusters, and the cosmic web. Every structure you've ever seen grew from these seeds.</p>
+    <p class="muted">Before recombination, gravity pulling matter inward and radiation pushing it outward set up sound waves rippling through the plasma — literal acoustic oscillations. When the universe went transparent, those waves froze in place, leaving a characteristic pattern of hot and cold spots. Measuring the sizes of those spots (the "acoustic peaks") is how cosmologists read off the universe's vital statistics.</p>
+    <table class="data">
+      <tr><th>What the CMB tells us</th><th>The answer</th></tr>
+      <tr><td>Geometry of space</td><td>Flat, to within ~0.4% — the universe is not curved like a sphere or saddle.</td></tr>
+      <tr><td>Age of the universe</td><td>13.8 billion years.</td></tr>
+      <tr><td>How much ordinary matter</td><td>~5% — matching Big Bang nucleosynthesis independently.</td></tr>
+      <tr><td>How much dark matter</td><td>~27% — required to fit the pattern of peaks.</td></tr>
+      <tr><td>How much dark energy</td><td>~68% — the remainder needed for a flat universe.</td></tr>
+    </table>
+    <div class="callout">Three completely different lines of evidence — the CMB, element abundances, and galaxy surveys — all converge on the same recipe. That agreement is why cosmologists trust the strange 5 / 27 / 68 split even without knowing what most of it <em>is</em>.</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>The missions that mapped it</h2>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card"><h3>COBE · 1989</h3><p class="muted">First detected the ripples and confirmed the near-perfect "blackbody" spectrum. Won the 2006 Nobel Prize.</p></div>
+      <div class="card"><h3>WMAP · 2001</h3><p class="muted">Sharpened the map and nailed down the cosmic recipe and a ~13.8-billion-year age.</p></div>
+      <div class="card"><h3>Planck · 2009</h3><p class="muted">The current gold standard — the most precise all-sky map, and the source of most numbers on this site.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- SCALE INTERLUDE -->
+<section id="scale">
+  <div class="wrap reveal">
+    <div class="eyebrow">Interlude</div>
+    <h2>The scale of everything</h2>
+    <p class="lead">The universe spans more than 60 orders of magnitude, from the Planck length to the cosmic horizon. Slide through it — each step is roughly ten times bigger than the last.</p>
+    <div class="panel" style="margin-top:20px;text-align:center">
+      <div id="scaleEmoji" style="font-size:4rem;line-height:1;margin:6px 0">🌍</div>
+      <div id="scaleName" class="readout" style="font-size:1.6rem">Earth</div>
+      <div id="scaleSize" style="color:var(--gold);font-family:var(--serif);margin:4px 0 2px">~1.3 × 10⁷ meters</div>
+      <div id="scaleDesc" class="muted" style="font-size:.92rem;max-width:60ch;margin:0 auto 16px">The pale blue dot.</div>
+      <input id="scaleSlider" type="range" min="0" max="15" value="8">
+      <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-top:4px">
+        <span>quantum</span><span>human</span><span>cosmic</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="pager">
+      <a class="prev" href="expansion.html"><div class="dir">← Previous</div><div class="ttl">Chapter 3 · The Expanding Universe</div></a>
+      <a class="next" href="mysteries.html"><div class="dir">Next →</div><div class="ttl">Chapter 5 · Paradoxes &amp; Mysteries</div></a>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  <div class="signature">Created by Lu</div>
+  <p class="src" style="margin-top:18px">Sources:
+    <a href="https://www.esa.int/Science_Exploration/Space_Science/Planck" target="_blank" rel="noopener">ESA Planck</a> ·
+    <a href="https://map.gsfc.nasa.gov/" target="_blank" rel="noopener">NASA WMAP</a> ·
+    <a href="https://lambda.gsfc.nasa.gov/" target="_blank" rel="noopener">NASA LAMBDA archive</a>
+  </p>
+</div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

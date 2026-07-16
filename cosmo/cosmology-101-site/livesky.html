@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live from Space · Cosmology 101</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<canvas id="sky"></canvas>
+<div class="nebula"></div>
+
+<nav><div class="navin">
+  <div class="brand"><a href="index.html">◉ Cosmology<span>101</span></a></div>
+  <a class="link" href="index.html">Home</a>
+  <a class="link" href="timeline.html">Timeline</a>
+  <a class="link" href="matter.html">Dark Universe</a>
+  <a class="link" href="expansion.html">Expansion</a>
+  <a class="link" href="firstlight.html">First Light</a>
+  <a class="link" href="mysteries.html">Mysteries</a>
+  <a class="link" href="livesky.html">Live Sky</a>
+  <a class="link" href="toolkit.html">Toolkit</a>
+</div></nav>
+
+<div class="wrap phead reveal">
+  <div class="crumb"><a href="index.html">Home</a> / Chapter 6</div>
+  <h1>Live from Space</h1>
+  <p class="lead">Enough theory — let's look at the real thing. This page pulls NASA's <b>Astronomy Picture of the Day</b> straight from their public API. Every image comes with an astronomer's explanation. Pick any date since June 16, 1995.</p>
+</div>
+
+<section style="padding-top:10px">
+  <div class="wrap reveal">
+    <div class="panel">
+      <div id="apodbox"><p class="muted">Loading today's cosmos… (needs an internet connection)</p></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:14px">
+        <input id="apodDate" type="date" style="max-width:170px">
+        <button class="btn" id="apodBtn">Fetch</button>
+        <button class="btn ghost" id="apodRand">Surprise me</button>
+      </div>
+      <p class="note">Powered by <a href="https://api.nasa.gov/" target="_blank" rel="noopener">api.nasa.gov</a> using the shared <span class="kbd">DEMO_KEY</span> (rate-limited to ~30 requests/hour). Grab your own free key in 30 seconds for unlimited use.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>How to read an astronomy image</h2>
+    <div class="grid g3" style="margin-top:16px">
+      <div class="card"><h3>Color is often a choice</h3><p class="muted">Deep-space images frequently map invisible wavelengths (infrared, X-ray) to visible colors. The "Pillars of Creation" you know are false-color — scientifically meaningful, but not what your eye would see.</p></div>
+      <div class="card"><h3>Every point is a time machine</h3><p class="muted">The farther the object, the older the light. A galaxy 10 billion light-years away shows you the universe as it was 10 billion years ago.</p></div>
+      <div class="card"><h3>Redshift = distance</h3><p class="muted">Astronomers label deep-field galaxies by redshift z. Higher z means farther, older, and — thanks to expansion — more stretched light.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>The great cosmic eyes</h2>
+    <div class="grid g2" style="margin-top:16px">
+      <div class="card"><h3>🔭 James Webb Space Telescope</h3><p class="muted">Infrared, launched 2021. Sees the earliest, most redshifted galaxies and peers through dust into stellar nurseries. <a href="https://webbtelescope.org/" target="_blank" rel="noopener">Gallery →</a></p></div>
+      <div class="card"><h3>🛰️ Hubble Space Telescope</h3><p class="muted">Visible/UV, since 1990. Still delivering, and its Deep Field images revealed thousands of galaxies in a speck of "empty" sky. <a href="https://hubblesite.org/" target="_blank" rel="noopener">Gallery →</a></p></div>
+      <div class="card"><h3>🌌 ESA Euclid</h3><p class="muted">Launched 2023 to map billions of galaxies and probe dark energy across cosmic time. <a href="https://sci.esa.int/web/euclid" target="_blank" rel="noopener">Mission →</a></p></div>
+      <div class="card"><h3>📡 Planck (retired)</h3><p class="muted">Mapped the cosmic microwave background with record precision — the source of most numbers on this site. <a href="https://www.esa.int/Science_Exploration/Space_Science/Planck" target="_blank" rel="noopener">Mission →</a></p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="pager">
+      <a class="prev" href="mysteries.html"><div class="dir">← Previous</div><div class="ttl">Chapter 5 · Mysteries</div></a>
+      <a class="next" href="toolkit.html"><div class="dir">Next →</div><div class="ttl">Chapter 7 · The Toolkit</div></a>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  <div class="signature">Created by Lu</div>
+  <p class="src" style="margin-top:18px">Sources:
+    <a href="https://apod.nasa.gov/apod/" target="_blank" rel="noopener">NASA APOD</a> ·
+    <a href="https://api.nasa.gov/" target="_blank" rel="noopener">api.nasa.gov</a> ·
+    <a href="https://webbtelescope.org/" target="_blank" rel="noopener">JWST</a>
+  </p>
+</div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Cosmologist's Toolkit · Cosmology 101</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<canvas id="sky"></canvas>
+<div class="nebula"></div>
+
+<nav><div class="navin">
+  <div class="brand"><a href="index.html">◉ Cosmology<span>101</span></a></div>
+  <a class="link" href="index.html">Home</a>
+  <a class="link" href="timeline.html">Timeline</a>
+  <a class="link" href="matter.html">Dark Universe</a>
+  <a class="link" href="expansion.html">Expansion</a>
+  <a class="link" href="firstlight.html">First Light</a>
+  <a class="link" href="mysteries.html">Mysteries</a>
+  <a class="link" href="livesky.html">Live Sky</a>
+  <a class="link" href="toolkit.html">Toolkit</a>
+</div></nav>
+
+<div class="wrap phead reveal">
+  <div class="crumb"><a href="index.html">Home</a> / Chapter 7</div>
+  <h1>The Cosmologist's Toolkit</h1>
+  <p class="lead">Calculators, a quick glossary, and a curated launchpad of reputable data sources and APIs — so you can keep exploring long after this page ends.</p>
+</div>
+
+<section style="padding-top:10px">
+  <div class="wrap reveal">
+    <div class="grid g2" style="align-items:start">
+      <div class="panel">
+        <h3 style="margin-top:0">Redshift → lookback time</h3>
+        <p class="muted" style="font-size:.92rem">Light from distant galaxies is stretched (redshifted). Higher redshift <b>z</b> = older light. This computes lookback time by numerically integrating the Friedmann equation for a flat ΛCDM universe (H₀ = 67.4, Ω<sub>m</sub> = 0.315, Ω<sub>Λ</sub> = 0.685).</p>
+        <label class="ctl">Redshift z = <span id="zlbl" class="readout" style="font-size:1rem">1.0</span></label>
+        <input id="zSlider" type="range" min="0" max="12" value="1" step="0.1">
+        <div class="grid g2" style="gap:12px;margin-top:14px">
+          <div><div style="font-size:.8rem;color:var(--muted)">Light travel time</div><div class="readout" id="ztime">7.9 Gyr</div></div>
+          <div><div style="font-size:.8rem;color:var(--muted)">Universe's age when the light left</div><div class="readout" id="zage">5.8 Gyr</div></div>
+        </div>
+        <div id="zexample" class="gold" style="margin-top:12px;font-size:.88rem;font-family:var(--serif)"></div>
+      </div>
+
+      <div class="panel">
+        <h3 style="margin-top:0">Hubble's Law calculator</h3>
+        <p class="muted" style="font-size:.92rem">v = H₀ × distance. Slide H₀ between the two disputed values to see the <a href="mysteries.html">Hubble Tension</a> in action.</p>
+        <label class="ctl">Distance (megaparsecs, Mpc)</label>
+        <input id="hubDist" type="number" value="100" min="0" step="10">
+        <label class="ctl">Hubble constant H₀ = <span id="h0lbl" class="readout" style="font-size:1rem">67.4</span> km/s/Mpc</label>
+        <input id="hubH0" type="range" min="60" max="76" value="67.4" step="0.1">
+        <div style="margin-top:16px;font-size:.9rem;color:var(--muted)">Recession velocity</div>
+        <div class="readout" id="hubVel">6,740 km/s</div>
+        <div style="margin-top:6px;font-size:.9rem;color:var(--muted)">…that's <span id="hubC">2.25%</span> the speed of light.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>A 90-second glossary</h2>
+    <div class="grid g2" style="gap:8px 26px;font-size:.95rem;color:var(--muted);margin-top:12px">
+      <div><b style="color:var(--ink)">Redshift (z)</b> — how much cosmic expansion has stretched light on its way to us; a proxy for distance and lookback time.</div>
+      <div><b style="color:var(--ink)">Parsec / Mpc</b> — a parsec is 3.26 light-years; a megaparsec (Mpc) is a million of them.</div>
+      <div><b style="color:var(--ink)">Light-year</b> — the distance light travels in one year, about 9.46 trillion km.</div>
+      <div><b style="color:var(--ink)">ΛCDM</b> — the standard model of cosmology: Lambda (dark energy) + Cold Dark Matter.</div>
+      <div><b style="color:var(--ink)">Scale factor a(t)</b> — the relative "size" of the universe; a = 1 today, smaller in the past.</div>
+      <div><b style="color:var(--ink)">Hubble constant (H₀)</b> — the present expansion rate, in km/s per megaparsec.</div>
+      <div><b style="color:var(--ink)">Baryonic matter</b> — ordinary atoms (protons &amp; neutrons), as opposed to dark matter.</div>
+      <div><b style="color:var(--ink)">CMB</b> — cosmic microwave background, the 2.725 K afterglow of the young universe.</div>
+      <div><b style="color:var(--ink)">BAO</b> — baryon acoustic oscillations, frozen sound waves used as a cosmic "standard ruler."</div>
+      <div><b style="color:var(--ink)">Gravitational lensing</b> — mass bending light; our best tool for mapping dark matter.</div>
+      <div><b style="color:var(--ink)">Equation of state (w)</b> — the ratio of pressure to energy density; w = −1 for a cosmological constant.</div>
+      <div><b style="color:var(--ink)">Recombination</b> — when the universe cooled enough to form neutral atoms and become transparent (~380,000 yr).</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>Explore it yourself</h2>
+    <div class="grid g2" style="margin-top:16px;align-items:start">
+      <div class="card">
+        <h3 style="margin-top:0">Reputable rabbit holes</h3>
+        <span class="pill"><a href="https://apod.nasa.gov/apod/" target="_blank" rel="noopener">NASA APOD archive</a></span>
+        <span class="pill"><a href="https://science.nasa.gov/universe/" target="_blank" rel="noopener">NASA Universe</a></span>
+        <span class="pill"><a href="https://www.esa.int/Science_Exploration/Space_Science/Planck" target="_blank" rel="noopener">ESA Planck</a></span>
+        <span class="pill"><a href="https://webbtelescope.org/" target="_blank" rel="noopener">JWST gallery</a></span>
+        <span class="pill"><a href="https://www.desi.lbl.gov/" target="_blank" rel="noopener">DESI survey</a></span>
+        <span class="pill"><a href="https://map.gsfc.nasa.gov/universe/" target="_blank" rel="noopener">NASA WMAP explainers</a></span>
+        <span class="pill"><a href="https://www.astro.ucla.edu/~wright/CosmoCalc.html" target="_blank" rel="noopener">Ned Wright's Cosmology Calculator</a></span>
+        <span class="pill"><a href="https://eyes.nasa.gov/" target="_blank" rel="noopener">NASA's Eyes (3D)</a></span>
+        <span class="pill"><a href="https://pdg.lbl.gov/" target="_blank" rel="noopener">Particle Data Group</a></span>
+        <span class="pill"><a href="https://sci.esa.int/web/euclid" target="_blank" rel="noopener">ESA Euclid</a></span>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">APIs to build with</h3>
+        <span class="pill"><a href="https://api.nasa.gov/" target="_blank" rel="noopener">api.nasa.gov (APOD, Mars, NEO)</a></span>
+        <span class="pill"><a href="https://images-api.nasa.gov/" target="_blank" rel="noopener">NASA Image &amp; Video Library</a></span>
+        <span class="pill"><a href="https://exoplanetarchive.ipac.caltech.edu/docs/program_interfaces.html" target="_blank" rel="noopener">NASA Exoplanet Archive</a></span>
+        <span class="pill"><a href="https://simbad.u-strasbg.fr/simbad/" target="_blank" rel="noopener">SIMBAD database</a></span>
+        <span class="pill"><a href="https://astroquery.readthedocs.io/" target="_blank" rel="noopener">astroquery (Python)</a></span>
+        <span class="pill"><a href="https://www.astropy.org/" target="_blank" rel="noopener">Astropy</a></span>
+        <p class="note">The APOD widget on the <a href="livesky.html">Live Sky</a> page is a working example of the NASA API — view source to see the ~15 lines that power it.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap narrow reveal">
+    <div class="callout"><b>You made it to the end.</b> You now know the age, size, and recipe of the universe; how it expands; where its oldest light comes from; and which questions still keep cosmologists up at night. That's a genuinely solid foundation — more than most people ever learn about the cosmos they live in.</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="pager">
+      <a class="prev" href="livesky.html"><div class="dir">← Previous</div><div class="ttl">Chapter 6 · Live from Space</div></a>
+      <a class="next" href="index.html"><div class="dir">Back to →</div><div class="ttl">Home</div></a>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  <p style="color:var(--muted);max-width:60ch;margin:0 auto 22px">The best time to be curious about the cosmos is always now.</p>
+  <div class="signature">Created by Lu</div>
+  <p class="src" style="margin-top:22px">Sources:
+    <a href="https://www.astro.ucla.edu/~wright/CosmoCalc.html" target="_blank" rel="noopener">Ned Wright · Cosmology Calculator</a> ·
+    <a href="https://pdg.lbl.gov/" target="_blank" rel="noopener">Particle Data Group</a> ·
+    <a href="https://api.nasa.gov/" target="_blank" rel="noopener">api.nasa.gov</a>
+  </p>
+</div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

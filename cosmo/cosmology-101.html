@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cosmology 101 · A Field Guide to the Universe</title>
+<style>
+  :root{
+    --bg:#05060f;
+    --bg2:#0a0c1c;
+    --ink:#e8ecff;
+    --muted:#9aa3c7;
+    --violet:#8b5cf6;
+    --magenta:#e0509e;
+    --cyan:#4fd6ff;
+    --gold:#ffd27a;
+    --green:#5eead4;
+    --card:rgba(255,255,255,0.04);
+    --stroke:rgba(255,255,255,0.10);
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;background:var(--bg);color:var(--ink);
+    font-family:var(--sans);line-height:1.65;overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:var(--cyan);text-decoration:none;border-bottom:1px dotted rgba(79,214,255,.4)}
+  a:hover{color:#fff;border-bottom-color:#fff}
+  h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.15;letter-spacing:.2px}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  section{position:relative;padding:74px 0;border-top:1px solid rgba(255,255,255,.05)}
+  .eyebrow{font-family:var(--sans);text-transform:uppercase;letter-spacing:.28em;font-size:12px;
+    color:var(--magenta);font-weight:700;margin-bottom:14px}
+  .lead{color:var(--muted);font-size:1.06rem;max-width:70ch}
+
+  /* starfield */
+  #sky{position:fixed;inset:0;z-index:-2;display:block}
+  .nebula{position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:
+      radial-gradient(60vw 60vw at 78% 8%, rgba(139,92,246,.20), transparent 60%),
+      radial-gradient(55vw 55vw at 12% 30%, rgba(224,80,158,.16), transparent 60%),
+      radial-gradient(70vw 70vw at 60% 95%, rgba(79,214,255,.12), transparent 62%);}
+
+  /* nav */
+  nav{position:sticky;top:0;z-index:50;backdrop-filter:blur(12px);
+    background:rgba(5,6,15,.72);border-bottom:1px solid var(--stroke)}
+  .navin{display:flex;gap:6px;align-items:center;flex-wrap:wrap;padding:11px 22px;max-width:1080px;margin:0 auto}
+  .brand{font-family:var(--serif);font-weight:700;margin-right:auto;font-size:1.05rem;letter-spacing:.4px}
+  .brand span{color:var(--magenta)}
+  nav a{color:var(--muted);border:0;font-size:.83rem;padding:6px 10px;border-radius:999px}
+  nav a:hover{color:#fff;background:rgba(255,255,255,.07)}
+
+  /* hero */
+  header.hero{min-height:92vh;display:flex;flex-direction:column;justify-content:center;
+    text-align:center;padding:60px 22px 40px}
+  .hero h1{font-size:clamp(2.6rem,8vw,5.6rem);margin:.1em 0 .2em;
+    background:linear-gradient(120deg,#fff 10%,var(--cyan) 45%,var(--magenta) 80%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;text-shadow:0 0 60px rgba(139,92,246,.25)}
+  .hero .kick{letter-spacing:.5em;text-transform:uppercase;font-size:13px;color:var(--gold);margin-bottom:8px}
+  .hero p{color:var(--muted);max-width:60ch;margin:14px auto 0;font-size:1.12rem}
+  .scrollcue{margin-top:44px;color:var(--muted);font-size:.8rem;letter-spacing:.2em;text-transform:uppercase;animation:bob 2.6s ease-in-out infinite}
+  @keyframes bob{0%,100%{transform:translateY(0);opacity:.6}50%{transform:translateY(9px);opacity:1}}
+
+  /* cards / grid */
+  .grid{display:grid;gap:18px}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:820px){.g3,.g4{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:560px){.g2,.g3,.g4{grid-template-columns:1fr}}
+  .card{background:var(--card);border:1px solid var(--stroke);border-radius:16px;padding:20px}
+  .card h3{margin:.1em 0 .3em;font-size:1.15rem}
+  .stat{ text-align:center}
+  .stat .num{font-family:var(--serif);font-size:2.1rem;font-weight:700;
+    background:linear-gradient(120deg,var(--cyan),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .stat .lbl{color:var(--muted);font-size:.85rem;margin-top:2px}
+  .pill{display:inline-block;font-size:.72rem;letter-spacing:.05em;padding:3px 10px;border-radius:999px;
+    border:1px solid var(--stroke);color:var(--muted);margin:2px 4px 2px 0}
+
+  /* controls */
+  .panel{background:linear-gradient(180deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
+    border:1px solid var(--stroke);border-radius:18px;padding:22px}
+  label.ctl{display:block;font-size:.82rem;color:var(--muted);margin:14px 0 6px;font-weight:600}
+  input[type=range]{width:100%;accent-color:var(--magenta);height:22px}
+  input[type=number],select{background:#0c0e20;color:var(--ink);border:1px solid var(--stroke);
+    border-radius:10px;padding:9px 11px;font-size:1rem;width:100%;font-family:var(--sans)}
+  .readout{font-family:var(--serif);font-size:1.5rem;color:var(--gold)}
+  .btn{display:inline-block;cursor:pointer;background:linear-gradient(120deg,var(--violet),var(--magenta));
+    color:#fff;border:0;border-radius:999px;padding:10px 20px;font-weight:700;font-size:.9rem}
+  .btn.ghost{background:transparent;border:1px solid var(--stroke);color:var(--ink)}
+
+  /* timeline */
+  .tl{position:relative;margin-top:26px}
+  .tl:before{content:"";position:absolute;left:22px;top:0;bottom:0;width:2px;
+    background:linear-gradient(var(--magenta),var(--cyan),var(--violet))}
+  .ev{position:relative;padding:0 0 26px 58px}
+  .ev:before{content:"";position:absolute;left:15px;top:4px;width:16px;height:16px;border-radius:50%;
+    background:var(--bg);border:3px solid var(--cyan);box-shadow:0 0 14px var(--cyan)}
+  .ev .t{font-family:var(--serif);color:var(--gold);font-size:.92rem;font-weight:700}
+  .ev h4{margin:2px 0 4px;font-size:1.08rem}
+  .ev p{margin:0;color:var(--muted);font-size:.94rem}
+
+  /* donut legend */
+  .legrow{display:flex;align-items:center;gap:10px;margin:8px 0;font-size:.95rem}
+  .sw{width:14px;height:14px;border-radius:4px;flex:none}
+
+  /* flip cards */
+  .flip{perspective:1400px;min-height:230px}
+  .flip .inner{position:relative;width:100%;height:100%;min-height:230px;transition:transform .7s;transform-style:preserve-3d}
+  .flip.on .inner{transform:rotateY(180deg)}
+  .flip .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:16px;padding:20px;
+    border:1px solid var(--stroke);background:var(--card);display:flex;flex-direction:column}
+  .flip .back{transform:rotateY(180deg);background:linear-gradient(160deg,rgba(139,92,246,.16),rgba(224,80,158,.10))}
+  .flip .tag{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--magenta);font-weight:700}
+  .flip h3{font-size:1.16rem;margin:6px 0}
+  .flip p{color:var(--muted);font-size:.92rem;margin:4px 0 0}
+  .flip .hint{margin-top:auto;font-size:.75rem;color:var(--muted);opacity:.8}
+  .flip .face.back p{color:#e7ecff}
+
+  /* apod */
+  #apodbox img{width:100%;border-radius:14px;display:block;border:1px solid var(--stroke)}
+  .miniform{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:12px}
+  .miniform input{max-width:150px}
+
+  .note{font-size:.82rem;color:var(--muted);border-left:2px solid var(--magenta);padding-left:12px;margin-top:14px}
+  .kbd{font-family:ui-monospace,Menlo,monospace;background:#0c0e20;border:1px solid var(--stroke);
+    padding:1px 6px;border-radius:6px;font-size:.85em;color:var(--cyan)}
+  canvas.toy{width:100%;border-radius:14px;background:radial-gradient(circle at 50% 40%,#0b0f26,#05060f);border:1px solid var(--stroke);display:block}
+
+  footer{padding:60px 22px 90px;text-align:center;border-top:1px solid var(--stroke)}
+  .signature{font-family:var(--serif);font-size:1.5rem;
+    background:linear-gradient(120deg,var(--gold),var(--magenta));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .src{font-size:.8rem;color:var(--muted)}
+  .src a{color:var(--muted)}
+  .reveal{opacity:0;transform:translateY(24px);transition:opacity .8s ease,transform .8s ease}
+  .reveal.show{opacity:1;transform:none}
+</style>
+</head>
+<body>
+<canvas id="sky"></canvas>
+<div class="nebula"></div>
+
+<nav>
+  <div class="navin">
+    <div class="brand">◉ Cosmology<span>101</span></div>
+    <a href="#numbers">Numbers</a>
+    <a href="#timeline">Timeline</a>
+    <a href="#recipe">What's it made of</a>
+    <a href="#expansion">Expansion</a>
+    <a href="#scale">Scale</a>
+    <a href="#cmb">First light</a>
+    <a href="#mysteries">Mysteries</a>
+    <a href="#live">Live sky</a>
+    <a href="#toolkit">Toolkit</a>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="kick">A field guide to everything</div>
+  <h1>Cosmology&nbsp;101</h1>
+  <p>The universe is 13.8 billion years old, 93 billion light-years wide, mostly made of stuff we can't see — and the more precisely we measure it, the stranger it gets. Here's the whole story, the settled science and the beautiful unsolved paradoxes, in one scrollable page.</p>
+  <div class="scrollcue">↓ scroll to begin ↓</div>
+</header>
+
+<!-- ============ NUMBERS ============ -->
+<section id="numbers">
+  <div class="wrap reveal">
+    <div class="eyebrow">Chapter 1 · Orientation</div>
+    <h2>The universe in nine numbers</h2>
+    <p class="lead">Modern cosmology is a precision science. These are the headline values from the <a href="https://www.esa.int/Science_Exploration/Space_Science/Planck" target="_blank" rel="noopener">Planck</a> satellite and current surveys — memorize these and you can hold your own at any dinner party in the galaxy.</p>
+    <div class="grid g3" style="margin-top:26px">
+      <div class="card stat"><div class="num" data-count="13.8" data-suf=" Gyr">13.8 Gyr</div><div class="lbl">Age of the universe</div></div>
+      <div class="card stat"><div class="num">93 Gly</div><div class="lbl">Diameter of the observable universe</div></div>
+      <div class="card stat"><div class="num">2.725 K</div><div class="lbl">Temperature of the cosmic microwave background</div></div>
+      <div class="card stat"><div class="num">~68%</div><div class="lbl">Dark energy</div></div>
+      <div class="card stat"><div class="num">~27%</div><div class="lbl">Dark matter</div></div>
+      <div class="card stat"><div class="num">~5%</div><div class="lbl">Ordinary (baryonic) matter — everything you can see</div></div>
+      <div class="card stat"><div class="num">~67–73</div><div class="lbl">Hubble constant H₀ (km/s per Mpc) — and it's disputed</div></div>
+      <div class="card stat"><div class="num">~2×10¹²</div><div class="lbl">Galaxies in the observable universe (est.)</div></div>
+      <div class="card stat"><div class="num">380,000 yr</div><div class="lbl">Age when the universe became transparent</div></div>
+    </div>
+    <p class="note">"Observable" is doing a lot of work: it's the region whose light has had time to reach us. The whole universe is larger — possibly infinite — and we simply can't see past our cosmic horizon.</p>
+  </div>
+</section>
+
+<!-- ============ TIMELINE ============ -->
+<section id="timeline">
+  <div class="wrap reveal">
+    <div class="eyebrow">Chapter 2 · Deep time</div>
+    <h2>13.8 billion years, top to bottom</h2>
+    <p class="lead">From a fraction of a fraction of a second to the formation of your solar system. The early universe happened breathtakingly fast; the interesting-for-life part came very, very late.</p>
+    <div class="tl">
+      <div class="ev"><div class="t">t ≈ 10⁻³⁴ s · Inflation</div><h4>The universe balloons</h4><p>Space expands by a factor of at least 10²⁶ in an instant, smoothing everything out and stretching quantum ripples into the seeds of future galaxies.</p></div>
+      <div class="ev"><div class="t">t ≈ 10⁻⁶ s · Quark soup freezes</div><h4>Protons &amp; neutrons form</h4><p>Quarks bind into the first protons and neutrons. A slight excess of matter over antimatter — about one part in a billion — survives. That leftover is everything.</p></div>
+      <div class="ev"><div class="t">t ≈ 3 min · Nucleosynthesis</div><h4>The first elements</h4><p>Hydrogen, helium and a trace of lithium are forged. The cosmic recipe — roughly 75% hydrogen, 25% helium — is locked in and matches observation stunningly.</p></div>
+      <div class="ev"><div class="t">t ≈ 380,000 yr · Recombination</div><h4>The universe turns transparent</h4><p>It cools enough for electrons to join nuclei into atoms. Light finally streams free — the flash we still detect today as the cosmic microwave background.</p></div>
+      <div class="ev"><div class="t">t ≈ 100–500 Myr · Cosmic dawn</div><h4>First stars ignite</h4><p>Gravity gathers gas into the first stars and galaxies, ending the "cosmic dark ages." JWST is now finding these earlier and brighter than models predicted.</p></div>
+      <div class="ev"><div class="t">t ≈ 9.2 Gyr · The Sun forms</div><h4>Our neighborhood assembles</h4><p>About 4.6 billion years ago, a cloud of gas enriched by earlier stellar generations collapses into the Sun and planets. You are made of that recycled stardust.</p></div>
+      <div class="ev"><div class="t">t ≈ 13.8 Gyr · Now</div><h4>Dark energy takes over</h4><p>For the last ~5 billion years the expansion has been <em>accelerating</em>. Distant galaxies are receding ever faster, and eventually most will vanish beyond our horizon forever.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ RECIPE (composition) ============ -->
+<section id="recipe">
+  <div class="wrap reveal">
+    <div class="eyebrow">Chapter 3 · The cosmic recipe</div>
+    <h2>What is the universe actually made of?</h2>
+    <p class="lead">Here's the humbling headline: everything humanity has ever seen, touched, or built — every star, planet and person — is about 5% of the total. The rest is two kinds of darkness we've named but not identified.</p>
+    <div class="grid g2" style="margin-top:26px;align-items:center">
+      <div class="panel" style="text-align:center">
+        <svg viewBox="0 0 220 220" width="260" height="260" style="max-width:100%">
+          <g id="donut" transform="rotate(-90 110 110)"></g>
+          <text x="110" y="104" text-anchor="middle" fill="#fff" font-size="15" font-family="var(--serif)">the</text>
+          <text x="110" y="126" text-anchor="middle" fill="#fff" font-size="17" font-family="var(--serif)">universe</text>
+        </svg>
+      </div>
+      <div>
+        <div class="legrow"><span class="sw" style="background:#8b5cf6"></span><b>Dark energy · ~68%</b>&nbsp;— a repulsive "pressure of empty space" driving accelerating expansion. Cause unknown.</div>
+        <div class="legrow"><span class="sw" style="background:#e0509e"></span><b>Dark matter · ~27%</b>&nbsp;— invisible mass that outweighs stars ~5:1 and holds galaxies together. Never directly detected.</div>
+        <div class="legrow"><span class="sw" style="background:#4fd6ff"></span><b>Ordinary matter · ~5%</b>&nbsp;— atoms: stars, gas, planets, you. And most of <em>this</em> is thin intergalactic gas, not stars.</div>
+        <p class="note">We infer dark matter from how galaxies rotate and how light bends around them (gravitational lensing), and dark energy from how the expansion speeds up. Both are among the biggest open problems in physics.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ EXPANSION ============ -->
+<section id="expansion">
+  <div class="wrap reveal">
+    <div class="eyebrow">Chapter 4 · The expanding universe</div>
+    <h2>Space itself is stretching</h2>
+    <p class="lead">Galaxies aren't flying <em>through</em> space away from us — the space <em>between</em> them is growing, like raisins drifting apart in rising dough. The farther a galaxy is, the faster it recedes. That's Hubble's Law, and it's the single observation that gave us the Big Bang.</p>
+
+    <div class="grid g2" style="margin-top:24px;align-items:start">
+      <div class="panel">
+        <canvas id="expcanvas" class="toy" height="300"></canvas>
+        <label class="ctl">Cosmic time — drag to run the universe forward &amp; back</label>
+        <input id="expTime" type="range" min="1" max="100" value="50">
+        <div style="display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted)">
+          <span>Scale factor a = <span id="scaleOut" class="readout" style="font-size:1rem">1.00</span></span>
+          <span>Every galaxy sees itself at the center →</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h3 style="margin-top:0">Hubble's Law calculator</h3>
+        <p style="color:var(--muted);font-size:.92rem;margin-top:4px">Recession speed v = H₀ × distance. Try a galaxy 100 Mpc away (~326 million light-years).</p>
+        <label class="ctl">Distance (megaparsecs, Mpc)</label>
+        <input id="hubDist" type="number" value="100" min="0" step="10">
+        <label class="ctl">Hubble constant H₀ = <span id="h0lbl" class="readout" style="font-size:1rem">67.4</span> km/s/Mpc</label>
+        <input id="hubH0" type="range" min="60" max="76" value="67.4" step="0.1">
+        <div style="margin-top:16px;font-size:.9rem;color:var(--muted)">Recession velocity</div>
+        <div class="readout" id="hubVel">6,740 km/s</div>
+        <div style="margin-top:6px;font-size:.9rem;color:var(--muted)">…that's <span id="hubC">2.25%</span> the speed of light.</div>
+        <p class="note">Beyond a certain distance, recession exceeds light-speed — allowed, because it's space expanding, not motion through space. Those galaxies are still visible (their old light is en route) but forever unreachable.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SCALE ============ -->
+<section id="scale">
+  <div class="wrap reveal">
+    <div class="eyebrow">Chapter 5 · Powers of ten</div>
+    <h2>From the Planck length to the cosmic horizon</h2>
+    <p class="lead">The universe spans more than 60 orders of magnitude. Slide through it — each step is roughly ten times bigger than the last.</p>
+    <div class="panel" style="margin-top:22px;text-align:center">
+      <div id="scaleEmoji" style="font-size:4rem;line-height:1;margin:6px 0">🌍</div>
+      <div id="scaleName" class="readout" style="font-size:1.6rem">Earth</div>
+      <div id="scaleSize" style="color:var(--gold);font-family:var(--serif);margin:4px 0 2px">~1.3 × 10⁷ meters</div>
+      <div id="scaleDesc" style="color:var(--muted);font-size:.92rem;max-width:60ch;margin:0 auto 16px">The pale blue dot. Home to the only known life in the cosmos.</div>
+      <input id="scaleSlider" type="range" min="0" max="15" value="8">
+      <div style="display:flex;justify-content:space-between;font-size:.72rem;color:var(--muted);margin-top:4px">
+        <span>quantum</span><span>human</span><span>cosmic</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CMB ============ -->
+<section id="cmb">
+  <div class="wrap reveal">
+    <div class="eyebrow">Chapter 6 · The baby picture</div>
+    <h2>The oldest light in existence</h2>
+    <div class="grid g2" style="align-items:center;margin-top:22px">
+      <div>
+        <p class="lead">When the universe was 380,000 years old it cooled enough to become transparent, releasing a flash of light in every direction. Stretched by 13.8 billion years of expansion, that flash is now faint microwaves at 2.725 K — the <b>cosmic microwave background (CMB)</b>. It's about 1% of the static on an old untuned TV.</p>
+        <p style="color:var(--muted)">The CMB is astonishingly uniform, but its tiny temperature ripples (1 part in 100,000) are the fingerprints of the density variations that grew into every galaxy. Measuring them precisely is how we pinned down the age, geometry, and contents of the cosmos.</p>
+        <p><a href="https://www.cosmos.esa.int/web/planck/picture-gallery" target="_blank" rel="noopener">See Planck's map of the whole sky →</a></p>
+      </div>
+      <div class="panel" style="text-align:center">
+        <svg viewBox="0 0 260 150" width="100%" style="border-radius:12px;overflow:hidden;border:1px solid var(--stroke)">
+          <defs><radialGradient id="cmbg"><stop offset="0" stop-color="#e0509e"/><stop offset="1" stop-color="#4fd6ff"/></radialGradient></defs>
+          <rect width="260" height="150" fill="#0b0f26"/>
+          <g id="cmbdots"></g>
+          <text x="130" y="142" text-anchor="middle" fill="#9aa3c7" font-size="9">simulated CMB temperature ripples · ΔT ~ 0.00001 K</text>
+        </svg>
+        <div style="font-size:.8rem;color:var(--muted);margin-top:8px">Red = very slightly hotter/denser · Blue = slightly cooler</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MYSTERIES ============ -->
+<section id="mysteries">
+  <div class="wrap reveal">
+    <div class="eyebrow">Chapter 7 · The good stuff</div>
+    <h2>Seven paradoxes cosmologists argue about</h2>
+    <p class="lead">This is where cosmology stops being a textbook and becomes a frontier. Tap any card to flip it.</p>
+    <div class="grid g2" style="margin-top:24px" id="flipgrid">
+
+      <div class="flip"><div class="inner">
+        <div class="face"><div class="tag">Paradox · 1823</div><h3>Why is the night sky dark?</h3><p>Olbers' Paradox: in an infinite, eternal, star-filled universe every line of sight should end on a star, so the whole sky should blaze like the Sun. It doesn't.</p><div class="hint">tap for the resolution →</div></div>
+        <div class="face back"><div class="tag">Resolution</div><h3>Because it had a beginning</h3><p>The universe is finite in age, so light from very distant stars hasn't arrived yet. And expansion redshifts distant light out of the visible band. Darkness itself is evidence of the Big Bang.</p></div>
+      </div></div>
+
+      <div class="flip"><div class="inner">
+        <div class="face"><div class="tag">Crisis · active</div><h3>The Hubble Tension</h3><p>Measure the expansion rate H₀ from the early universe (Planck/CMB) and you get ~67.4. Measure it from nearby supernovae (SH0ES) and you get ~73. Both are precise. They disagree at 5σ.</p><div class="hint">tap for the state of play →</div></div>
+        <div class="face back"><div class="tag">2025 status</div><h3>JWST made it worse</h3><p>Many hoped Webb would show the local measurement was flawed. Instead it confirmed the Cepheid distances, deepening the tension. It may be pointing to genuinely new physics in the early universe.</p></div>
+      </div></div>
+
+      <div class="flip"><div class="inner">
+        <div class="face"><div class="tag">Frontier · 2024–25</div><h3>Is dark energy changing?</h3><p>The simplest model treats dark energy as a constant (Einstein's Λ). But the DESI survey now sees hints that it may have been <em>stronger in the past</em> and is weakening.</p><div class="hint">tap for the numbers →</div></div>
+        <div class="face back"><div class="tag">DESI DR2</div><h3>A 4σ hint</h3><p>Combining DESI's 2025 data with the CMB and supernovae disfavors a constant Λ at up to ~4σ. Not yet the 5σ "discovery" bar — but if it holds, the textbook model needs rewriting.</p></div>
+      </div></div>
+
+      <div class="flip"><div class="inner">
+        <div class="face"><div class="tag">Paradox · 1950</div><h3>Where is everybody?</h3><p>The Fermi Paradox: the galaxy is old and huge, with billions of Earth-like worlds. A single civilization could colonize it in a few million years. So why total silence?</p><div class="hint">tap for the candidates →</div></div>
+        <div class="face back"><div class="tag">Possible answers</div><h3>Take your pick</h3><p>Maybe life is rare; maybe intelligence self-destructs (a "Great Filter"); maybe they're out there but quiet, or we're too early to the party. We genuinely don't know — and that uncertainty is itself alarming.</p></div>
+      </div></div>
+
+      <div class="flip"><div class="inner">
+        <div class="face"><div class="tag">Paradox · quantum</div><h3>Black-hole information</h3><p>Hawking showed black holes evaporate. But if they radiate featureless heat and vanish, the information about whatever fell in is destroyed — which quantum mechanics forbids.</p><div class="hint">tap for the twist →</div></div>
+        <div class="face back"><div class="tag">Where it stands</div><h3>Physics vs. physics</h3><p>General relativity and quantum theory give contradictory answers, so one must bend. Recent work ("islands," the Page curve) suggests information does escape, but a full theory of quantum gravity is still missing.</p></div>
+      </div></div>
+
+      <div class="flip"><div class="inner">
+        <div class="face"><div class="tag">Paradox · fine-tuning</div><h3>The worst prediction in physics</h3><p>Quantum theory predicts the energy of empty space should be up to 10¹²⁰ times larger than the tiny dark-energy value we observe. It's the largest mismatch between theory and reality ever.</p><div class="hint">tap for the ideas →</div></div>
+        <div class="face back"><div class="tag">Attempts</div><h3>No accepted answer</h3><p>Proposals range from unknown cancellation mechanisms to the multiverse — that Λ varies across countless universes and we live in a rare one where it's small enough for galaxies (and us) to form.</p></div>
+      </div></div>
+
+      <div class="flip"><div class="inner">
+        <div class="face"><div class="tag">Paradox · origin</div><h3>Why is there anything at all?</h3><p>The Big Bang should have made matter and antimatter in equal amounts, which annihilate completely. Yet here we are. A one-in-a-billion asymmetry tipped the balance toward matter.</p><div class="hint">tap for the search →</div></div>
+        <div class="face back"><div class="tag">Baryogenesis</div><h3>An unsolved excess</h3><p>Something in the early universe favored matter over antimatter. Experiments hunt for tiny asymmetries in particle decays that could explain it, but the mechanism remains one of physics' great open questions.</p></div>
+      </div></div>
+
+      <div class="flip"><div class="inner">
+        <div class="face"><div class="tag">Frontier · JWST</div><h3>The "impossible" early galaxies</h3><p>Webb keeps finding galaxies that look too big, too bright and too mature to exist just a few hundred million years after the Big Bang.</p><div class="hint">tap for what it means →</div></div>
+        <div class="face back"><div class="tag">Open question</div><h3>Faster than we thought</h3><p>Either early star formation was far more efficient than models allow, or some of the light comes from feeding black holes. It's an active puzzle reshaping our picture of cosmic dawn — not (yet) a crisis for the Big Bang.</p></div>
+      </div></div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ LIVE SKY ============ -->
+<section id="live">
+  <div class="wrap reveal">
+    <div class="eyebrow">Chapter 8 · Live from space</div>
+    <h2>Today's view of the universe</h2>
+    <p class="lead">This pulls NASA's <b>Astronomy Picture of the Day</b> straight from their public API. Pick any date since June 16, 1995 to see what the cosmos served up.</p>
+    <div class="panel" style="margin-top:20px">
+      <div id="apodbox"><p style="color:var(--muted)">Loading today's cosmos… (needs an internet connection)</p></div>
+      <div class="miniform">
+        <input id="apodDate" type="date">
+        <button class="btn" id="apodBtn">Fetch</button>
+        <button class="btn ghost" id="apodRand">Surprise me</button>
+      </div>
+      <p class="note">Powered by <a href="https://api.nasa.gov/" target="_blank" rel="noopener">api.nasa.gov</a> using the shared <span class="kbd">DEMO_KEY</span> (rate-limited). Grab your own free key in 30 seconds for unlimited requests.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TOOLKIT ============ -->
+<section id="toolkit">
+  <div class="wrap reveal">
+    <div class="eyebrow">Chapter 9 · Go deeper</div>
+    <h2>The cosmologist's toolkit</h2>
+
+    <div class="grid g2" style="margin-top:22px;align-items:start">
+      <div class="panel">
+        <h3 style="margin-top:0">Redshift → lookback time</h3>
+        <p style="color:var(--muted);font-size:.92rem">Light from distant galaxies is stretched (redshifted). Higher redshift <b>z</b> = older light. This computes lookback time for a standard flat ΛCDM universe (H₀=67.4, Ω<sub>m</sub>=0.315).</p>
+        <label class="ctl">Redshift z = <span id="zlbl" class="readout" style="font-size:1rem">1.0</span></label>
+        <input id="zSlider" type="range" min="0" max="12" value="1" step="0.1">
+        <div class="grid g2" style="gap:12px;margin-top:14px">
+          <div><div style="font-size:.8rem;color:var(--muted)">Light travel time</div><div class="readout" id="ztime">7.8 Gyr</div></div>
+          <div><div style="font-size:.8rem;color:var(--muted)">We see it as it was when the universe was</div><div class="readout" id="zage">6.0 Gyr</div><div style="font-size:.75rem;color:var(--muted)">old</div></div>
+        </div>
+        <div id="zexample" style="margin-top:12px;font-size:.88rem;color:var(--gold);font-family:var(--serif)"></div>
+      </div>
+
+      <div class="panel">
+        <h3 style="margin-top:0">Explore it yourself</h3>
+        <p style="color:var(--muted);font-size:.92rem">Free, reputable rabbit holes — data, tools and explainers:</p>
+        <div>
+          <span class="pill"><a href="https://apod.nasa.gov/apod/" target="_blank" rel="noopener">NASA APOD archive</a></span>
+          <span class="pill"><a href="https://www.esa.int/Science_Exploration/Space_Science/Planck" target="_blank" rel="noopener">ESA Planck mission</a></span>
+          <span class="pill"><a href="https://webbtelescope.org/" target="_blank" rel="noopener">JWST gallery</a></span>
+          <span class="pill"><a href="https://www.desi.lbl.gov/" target="_blank" rel="noopener">DESI survey</a></span>
+          <span class="pill"><a href="https://pdg.lbl.gov/2023/reviews/rpp2022-rev-astrophysical-constants.pdf" target="_blank" rel="noopener">Particle Data Group constants</a></span>
+          <span class="pill"><a href="https://map.gsfc.nasa.gov/universe/" target="_blank" rel="noopener">NASA WMAP explainers</a></span>
+          <span class="pill"><a href="https://www.astro.ucla.edu/~wright/CosmoCalc.html" target="_blank" rel="noopener">Ned Wright's Cosmology Calculator</a></span>
+          <span class="pill"><a href="https://eyes.nasa.gov/" target="_blank" rel="noopener">NASA's Eyes (3D)</a></span>
+          <span class="pill"><a href="https://sci.esa.int/web/euclid" target="_blank" rel="noopener">ESA Euclid</a></span>
+        </div>
+        <h3 style="margin:20px 0 6px">APIs to build with</h3>
+        <div>
+          <span class="pill"><a href="https://api.nasa.gov/" target="_blank" rel="noopener">api.nasa.gov (APOD, Mars, NEO)</a></span>
+          <span class="pill"><a href="https://images-api.nasa.gov/" target="_blank" rel="noopener">NASA Image Library API</a></span>
+          <span class="pill"><a href="https://exoplanetarchive.ipac.caltech.edu/docs/program_interfaces.html" target="_blank" rel="noopener">NASA Exoplanet Archive</a></span>
+          <span class="pill"><a href="http://simbad.u-strasbg.fr/simbad/" target="_blank" rel="noopener">SIMBAD astronomical database</a></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:20px">
+      <h3 style="margin-top:0">A 60-second glossary</h3>
+      <div class="grid g2" style="gap:6px 26px;font-size:.92rem;color:var(--muted)">
+        <div><b style="color:var(--ink)">Redshift (z)</b> — how much expansion has stretched light on its way to us.</div>
+        <div><b style="color:var(--ink)">Parsec / Mpc</b> — 3.26 light-years; a megaparsec is a million of those.</div>
+        <div><b style="color:var(--ink)">ΛCDM</b> — the standard model: Lambda (dark energy) + Cold Dark Matter.</div>
+        <div><b style="color:var(--ink)">Scale factor a(t)</b> — the "size" of the universe relative to today (a=1 now).</div>
+        <div><b style="color:var(--ink)">Baryonic matter</b> — ordinary atoms, as opposed to dark matter.</div>
+        <div><b style="color:var(--ink)">Light-year</b> — the distance light travels in a year, ~9.46 trillion km.</div>
+        <div><b style="color:var(--ink)">BAO</b> — baryon acoustic oscillations, a "standard ruler" frozen into galaxy spacing.</div>
+        <div><b style="color:var(--ink)">Gravitational lensing</b> — mass bending light; our best map of dark matter.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <p style="color:var(--muted);max-width:60ch;margin:0 auto 22px">
+      Everything here reflects the consensus of modern cosmology as of 2026 — including the honest admission that ~95% of the universe remains a mystery. The best time to be curious about the cosmos is always now.
+    </p>
+    <div class="signature">Created by Lu</div>
+    <p class="src" style="margin-top:26px">Sources &amp; further reading:
+      <a href="https://www.esa.int/Science_Exploration/Space_Science/Planck" target="_blank" rel="noopener">ESA Planck</a> ·
+      <a href="https://news.fnal.gov/2025/03/new-desi-results-strengthen-hints-that-dark-energy-may-evolve/" target="_blank" rel="noopener">DESI / Fermilab (2025)</a> ·
+      <a href="https://cerncourier.com/a/the-hubble-tension/" target="_blank" rel="noopener">CERN Courier · Hubble tension</a> ·
+      <a href="https://science.nasa.gov/universe/" target="_blank" rel="noopener">NASA Universe</a> ·
+      <a href="https://apod.nasa.gov/apod/" target="_blank" rel="noopener">NASA APOD</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+/* ---------- starfield ---------- */
+(function(){
+  const c=document.getElementById('sky'),x=c.getContext('2d');let w,h,stars;
+  function init(){w=c.width=innerWidth;h=c.height=innerHeight;
+    stars=Array.from({length:Math.min(320,Math.floor(w*h/6000))},()=>({
+      x:Math.random()*w,y:Math.random()*h,z:Math.random()*1.6+.3,
+      r:Math.random()*1.3+.2,tw:Math.random()*Math.PI*2}));}
+  function draw(t){x.clearRect(0,0,w,h);
+    for(const s of stars){const a=.4+.6*Math.abs(Math.sin(s.tw+t/900*s.z));
+      x.globalAlpha=a;x.fillStyle= s.z>1.3?'#cfe0ff':(s.z>0.8?'#fff':'#ffe6c9');
+      x.beginPath();x.arc(s.x,s.y,s.r,0,7);x.fill();
+      s.y+=s.z*0.04;if(s.y>h){s.y=0;s.x=Math.random()*w;}}
+    x.globalAlpha=1;requestAnimationFrame(draw);}
+  addEventListener('resize',init);init();requestAnimationFrame(draw);
+})();
+
+/* ---------- reveal on scroll ---------- */
+(function(){const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('show')}),{threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));})();
+
+/* ---------- composition donut ---------- */
+(function(){
+  const data=[{v:68,c:'#8b5cf6'},{v:27,c:'#e0509e'},{v:5,c:'#4fd6ff'}];
+  const R=92,cx=110,cy=110,circ=2*Math.PI*R,g=document.getElementById('donut');
+  let off=0;
+  data.forEach(d=>{
+    const len=circ*d.v/100;
+    const el=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    el.setAttribute('cx',cx);el.setAttribute('cy',cy);el.setAttribute('r',R);
+    el.setAttribute('fill','none');el.setAttribute('stroke',d.c);el.setAttribute('stroke-width',26);
+    el.setAttribute('stroke-dasharray',`${len} ${circ-len}`);
+    el.setAttribute('stroke-dashoffset',-off);
+    el.style.transition='stroke-width .3s';
+    g.appendChild(el);off+=len;
+  });
+})();
+
+/* ---------- CMB dots ---------- */
+(function(){
+  const g=document.getElementById('cmbdots');
+  for(let i=0;i<520;i++){
+    const cx=Math.random()*260,cy=Math.random()*138,t=Math.random();
+    const el=document.createElementNS('http://www.w3.org/2000/svg','circle');
+    el.setAttribute('cx',cx);el.setAttribute('cy',cy);el.setAttribute('r',Math.random()*2.4+1.4);
+    const col=t<.5? [79,214,255] : [224,80,158];
+    el.setAttribute('fill',`rgba(${col[0]},${col[1]},${col[2]},${.25+Math.random()*.5})`);
+    g.appendChild(el);
+  }
+})();
+
+/* ---------- expanding universe ---------- */
+(function(){
+  const cv=document.getElementById('expcanvas'),g=cv.getContext('2d');
+  const seeds=Array.from({length:34},()=>({x:(Math.random()*2-1),y:(Math.random()*2-1),r:Math.random()*2+1.4,h:Math.random()*360}));
+  function size(){cv.width=cv.clientWidth*devicePixelRatio;cv.height=300*devicePixelRatio;g.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0);}
+  const slider=document.getElementById('expTime'),out=document.getElementById('scaleOut');
+  function draw(){
+    const W=cv.clientWidth,H=300,cx=W/2,cy=H/2;
+    const a=slider.value/50; // scale factor 0.02..2
+    g.clearRect(0,0,W,H);
+    out.textContent=a.toFixed(2);
+    const spread=Math.min(W,H)*0.46*a;
+    // connecting faint lines to show uniform stretch
+    for(const s of seeds){
+      const px=cx+s.x*spread, py=cy+s.y*spread;
+      g.beginPath();g.arc(px,py,s.r*(0.7+a*0.5),0,7);
+      g.fillStyle=`hsla(${s.h},80%,70%,.9)`;g.shadowBlur=8;g.shadowColor=`hsla(${s.h},80%,70%,.7)`;
+      g.fill();g.shadowBlur=0;
+    }
+    // center marker (Milky Way)
+    g.beginPath();g.arc(cx,cy,3.4,0,7);g.fillStyle='#fff';g.fill();
+  }
+  addEventListener('resize',()=>{size();draw();});
+  slider.addEventListener('input',draw);
+  size();draw();
+})();
+
+/* ---------- Hubble calculator ---------- */
+(function(){
+  const d=document.getElementById('hubDist'),h0=document.getElementById('hubH0'),
+    h0l=document.getElementById('h0lbl'),v=document.getElementById('hubVel'),
+    cc=document.getElementById('hubC');
+  function upd(){
+    const H=parseFloat(h0.value),D=parseFloat(d.value)||0;
+    const vel=H*D;h0l.textContent=H.toFixed(1);
+    v.textContent=vel.toLocaleString(undefined,{maximumFractionDigits:0})+' km/s';
+    cc.textContent=(vel/299792.458*100).toFixed(2)+'%';
+  }
+  d.addEventListener('input',upd);h0.addEventListener('input',upd);upd();
+})();
+
+/* ---------- scale slider ---------- */
+(function(){
+  const steps=[
+    {e:'⚛️',n:'Planck length',s:'1.6 × 10⁻³⁵ m',d:'The smallest meaningful length. Below this, space itself may lose meaning.'},
+    {e:'🔵',n:'Proton',s:'~10⁻¹⁵ m',d:'A single proton in an atomic nucleus.'},
+    {e:'🧬',n:'DNA helix',s:'~10⁻⁹ m (2 nm wide)',d:'The molecule that codes for all known life.'},
+    {e:'🦠',n:'Bacterium',s:'~10⁻⁶ m',d:'A single-celled organism, about a micron across.'},
+    {e:'🐜',n:'Ant',s:'~10⁻³ m',d:'Everyday millimeter scale.'},
+    {e:'🧍',n:'Human',s:'~1.7 m',d:'You. The reference point for all of this.'},
+    {e:'🏔️',n:'Mount Everest',s:'~10⁴ m',d:'Tallest mountain above sea level.'},
+    {e:'🌆',n:'A large city',s:'~10⁵ m',d:'Tens of kilometers across.'},
+    {e:'🌍',n:'Earth',s:'~1.3 × 10⁷ m',d:'The pale blue dot. Home to the only known life in the cosmos.'},
+    {e:'☀️',n:'The Sun',s:'~1.4 × 10⁹ m',d:'You could line up ~109 Earths across its face.'},
+    {e:'🪐',n:'Solar System',s:'~10¹³ m',d:'Out to Neptune; the heliosphere stretches much farther.'},
+    {e:'✨',n:'One light-year',s:'~9.5 × 10¹⁵ m',d:'The distance light travels in a year.'},
+    {e:'🌟',n:'To the nearest star',s:'~4 × 10¹⁶ m',d:'Proxima Centauri, 4.24 light-years away.'},
+    {e:'🌌',n:'The Milky Way',s:'~10²¹ m (~100,000 ly)',d:'Our galaxy: a few hundred billion stars.'},
+    {e:'🕸️',n:'Local supercluster',s:'~10²⁴ m',d:'Galaxies strung along the cosmic web of filaments.'},
+    {e:'♾️',n:'Observable universe',s:'~8.8 × 10²⁶ m (93 Gly)',d:'Everything whose light has had time to reach us. The edge of the seeable.'}
+  ];
+  const sl=document.getElementById('scaleSlider');
+  const em=document.getElementById('scaleEmoji'),nm=document.getElementById('scaleName'),
+    sz=document.getElementById('scaleSize'),ds=document.getElementById('scaleDesc');
+  function upd(){const s=steps[sl.value];em.textContent=s.e;nm.textContent=s.n;sz.textContent=s.s;ds.textContent=s.d;}
+  sl.addEventListener('input',upd);upd();
+})();
+
+/* ---------- redshift / lookback (flat LCDM numeric integration) ---------- */
+(function(){
+  const H0=67.4, Om=0.315, OL=0.685;
+  const HubbleTimeGyr=977.8/H0; // 1/H0 in Gyr  (977.8 = conversion for km/s/Mpc -> Gyr^-1 inverse)
+  const ageNow=13.79;
+  function E(z){return Math.sqrt(Om*Math.pow(1+z,3)+OL);}
+  function lookback(z){ // integral 0..z of dz/((1+z)E(z)) * (1/H0)
+    let n=2000,sum=0,dz=z/n;
+    for(let i=0;i<n;i++){const zz=(i+0.5)*dz;sum+=1/((1+zz)*E(zz))*dz;}
+    return HubbleTimeGyr*sum;
+  }
+  const sl=document.getElementById('zSlider'),zl=document.getElementById('zlbl'),
+    tt=document.getElementById('ztime'),ag=document.getElementById('zage'),ex=document.getElementById('zexample');
+  const examples=[
+    {z:0.0,t:'Right here, right now.'},
+    {z:0.5,t:'≈ light from the era when Earth\'s dinosaurs had long vanished — the Sun already middle-aged.'},
+    {z:1.0,t:'≈ the cosmic peak of star formation — the universe\'s baby-boom of new suns.'},
+    {z:2.0,t:'≈ "cosmic noon": galaxies forming stars furiously.'},
+    {z:6.0,t:'≈ the end of reionization — the fog of the young universe clearing.'},
+    {z:10.0,t:'≈ some of the earliest galaxies JWST can see — cosmic dawn.'},
+    {z:1100,t:'(off this scale) = the CMB itself, the surface of last scattering.'}
+  ];
+  function pick(z){let best=examples[0];for(const e of examples){if(z>=e.z)best=e;}return best.t;}
+  function upd(){
+    const z=parseFloat(sl.value);zl.textContent=z.toFixed(1);
+    const lb=lookback(z);
+    tt.textContent=lb.toFixed(1)+' Gyr';
+    ag.textContent=Math.max(0,(ageNow-lb)).toFixed(1)+' Gyr';
+    ex.textContent=pick(z);
+  }
+  sl.addEventListener('input',upd);upd();
+})();
+
+/* ---------- NASA APOD ---------- */
+(function(){
+  const box=document.getElementById('apodbox'),dt=document.getElementById('apodDate'),
+    btn=document.getElementById('apodBtn'),rnd=document.getElementById('apodRand');
+  const KEY='DEMO_KEY';
+  const today=new Date().toISOString().slice(0,10);
+  dt.max=today;dt.value=today;
+  function render(a){
+    if(a.code||a.error){box.innerHTML='<p style="color:var(--magenta)">Couldn\'t reach NASA (rate limit or offline). Try again shortly, or use your own API key.</p>';return;}
+    const media = a.media_type==='image'
+      ? `<a href="${a.hdurl||a.url}" target="_blank" rel="noopener"><img src="${a.url}" alt="${a.title}"></a>`
+      : `<div style="position:relative;padding-bottom:56%"><iframe src="${a.url}" style="position:absolute;inset:0;width:100%;height:100%;border:0;border-radius:14px" allowfullscreen></iframe></div>`;
+    box.innerHTML=`${media}
+      <h3 style="margin:14px 0 2px">${a.title}</h3>
+      <div style="font-size:.8rem;color:var(--muted)">${a.date}${a.copyright?' · © '+a.copyright.trim():''}</div>
+      <p style="color:var(--muted);font-size:.94rem;margin-top:10px">${a.explanation}</p>`;
+  }
+  function load(date){
+    box.innerHTML='<p style="color:var(--muted)">Contacting NASA…</p>';
+    let url=`https://api.nasa.gov/planetary/apod?api_key=${KEY}`+(date?`&date=${date}`:'');
+    fetch(url).then(r=>r.json()).then(render)
+      .catch(()=>box.innerHTML='<p style="color:var(--magenta)">Network blocked — open this page with an internet connection to see the live image.</p>');
+  }
+  btn.onclick=()=>load(dt.value);
+  rnd.onclick=()=>{
+    const start=new Date(1995,5,16).getTime(),end=Date.now();
+    const d=new Date(start+Math.random()*(end-start)).toISOString().slice(0,10);
+    dt.value=d;load(d);
+  };
+  load(null);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Dark Universe · Cosmology 101</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<canvas id="sky"></canvas>
+<div class="nebula"></div>
+
+<nav><div class="navin">
+  <div class="brand"><a href="index.html">◉ Cosmology<span>101</span></a></div>
+  <a class="link" href="index.html">Home</a>
+  <a class="link" href="timeline.html">Timeline</a>
+  <a class="link" href="matter.html">Dark Universe</a>
+  <a class="link" href="expansion.html">Expansion</a>
+  <a class="link" href="firstlight.html">First Light</a>
+  <a class="link" href="mysteries.html">Mysteries</a>
+  <a class="link" href="livesky.html">Live Sky</a>
+  <a class="link" href="toolkit.html">Toolkit</a>
+</div></nav>
+
+<div class="wrap phead reveal">
+  <div class="crumb"><a href="index.html">Home</a> / Chapter 2</div>
+  <h1>The Dark Universe</h1>
+  <p class="lead">Here is the most humbling fact in all of science: everything humanity has ever seen, touched, or built — every star, planet, and person — is about 5% of what exists. The other 95% comes in two flavors of darkness we have named but never identified.</p>
+</div>
+
+<section style="padding-top:10px">
+  <div class="wrap reveal">
+    <div class="grid g2" style="align-items:center">
+      <div class="panel" style="text-align:center">
+        <svg viewBox="0 0 220 220" width="260" height="260" style="max-width:100%">
+          <g id="donut" transform="rotate(-90 110 110)"></g>
+          <text x="110" y="104" text-anchor="middle" fill="#fff" font-size="15" font-family="Georgia,serif">the</text>
+          <text x="110" y="126" text-anchor="middle" fill="#fff" font-size="17" font-family="Georgia,serif">universe</text>
+        </svg>
+      </div>
+      <div>
+        <div class="legrow"><span class="sw" style="background:#8b5cf6"></span><b>Dark energy · ~68%</b></div>
+        <div class="legrow"><span class="sw" style="background:#e0509e"></span><b>Dark matter · ~27%</b></div>
+        <div class="legrow"><span class="sw" style="background:#4fd6ff"></span><b>Ordinary matter · ~5%</b></div>
+        <p class="muted" style="margin-top:12px">And most of that 5% is thin intergalactic gas — stars and planets are a rounding error. The two darknesses are unrelated: dark <em>matter</em> pulls things together; dark <em>energy</em> pushes the whole universe apart.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DARK MATTER -->
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow">Part 1</div>
+    <h2>Dark matter — the invisible scaffolding</h2>
+    <p class="lead">Dark matter is mass that doesn't emit, absorb, or reflect light. We can't see it directly, yet it outweighs all the stars and gas roughly five to one and forms the scaffolding on which every galaxy hangs. We infer it purely from its gravity.</p>
+
+    <h3 style="margin-top:26px">The evidence is overwhelming</h3>
+    <div class="grid g2" style="margin-top:14px">
+      <div class="card"><h3>1 · Galaxy rotation curves</h3><p class="muted">Stars at the edges of spiral galaxies orbit just as fast as those near the center. With only visible matter they should slow down like outer planets do. Extra unseen mass is holding them.</p></div>
+      <div class="card"><h3>2 · Gravitational lensing</h3><p class="muted">Galaxy clusters bend background light far more than their visible mass can account for. Mapping the bending maps the dark matter directly.</p></div>
+      <div class="card"><h3>3 · The Bullet Cluster</h3><p class="muted">In this cosmic collision, lensing shows the mass sailed straight through while the visible gas got stuck and heated — the "smoking gun" that the mass is something other than ordinary matter.</p></div>
+      <div class="card"><h3>4 · The CMB &amp; cosmic web</h3><p class="muted">The pattern of ripples in the early-universe light, and the large-scale arrangement of galaxies, both require about five times more matter than we can see. <a href="firstlight.html">More →</a></p></div>
+    </div>
+
+    <div class="panel" style="margin-top:24px">
+      <h3 style="margin-top:0">Interactive · the rotation-curve problem</h3>
+      <p class="muted" style="font-size:.92rem">The dashed cyan line is how orbital speed <em>should</em> fall off with distance if a galaxy contained only its visible matter (like planets slowing with distance from the Sun). Toggle on what we actually observe.</p>
+      <canvas id="rotcanvas" class="toy" height="300"></canvas>
+      <label style="display:inline-flex;align-items:center;gap:8px;margin-top:12px;cursor:pointer">
+        <input type="checkbox" id="rotToggle"> <span>Show the observed curve</span>
+      </label>
+      <p class="note">The observed curve stays flat far beyond the visible edge. The simplest explanation: a vast halo of dark matter enveloping the galaxy, several times more massive than everything that glows.</p>
+    </div>
+
+    <h3 style="margin-top:30px">So what is it?</h3>
+    <p class="muted">We know what dark matter <em>does</em>, not what it <em>is</em>. The leading idea is a new kind of particle that barely interacts with ordinary matter. Candidates include:</p>
+    <table class="data">
+      <tr><th>Candidate</th><th>Idea</th><th>Status</th></tr>
+      <tr><td>WIMPs</td><td>Weakly Interacting Massive Particles — heavy, sluggish particles from beyond the Standard Model.</td><td>Long the favorite; direct-detection experiments keep coming up empty, narrowing the options.</td></tr>
+      <tr><td>Axions</td><td>Ultralight particles first proposed to fix an unrelated problem in particle physics.</td><td>A hot current contender; several experiments are actively hunting them.</td></tr>
+      <tr><td>Primordial black holes</td><td>Black holes formed in the very early universe, not from dying stars.</td><td>Possible for narrow mass ranges; heavily constrained by observations.</td></tr>
+      <tr><td>MACHOs</td><td>Dim ordinary objects — faint stars, rogue planets.</td><td>Largely ruled out; there simply aren't enough of them.</td></tr>
+      <tr><td>Modified gravity (MOND)</td><td>Maybe gravity itself behaves differently, and there's no dark matter at all.</td><td>Explains individual galaxies well but struggles with clusters and the CMB.</td></tr>
+    </table>
+    <div class="callout">Finding out what dark matter is would be one of the biggest discoveries in the history of physics. Despite decades of ingenious experiments, it has never been directly detected — only felt through gravity.</div>
+  </div>
+</section>
+
+<!-- DARK ENERGY -->
+<section>
+  <div class="wrap reveal">
+    <div class="eyebrow">Part 2</div>
+    <h2>Dark energy — the accelerator</h2>
+    <p class="lead">In 1998, two teams measured distant supernovae expecting to see cosmic expansion slowing under gravity. Instead they found it <em>speeding up</em>. Something with negative pressure — a repulsive "energy of empty space" — is pushing the universe apart. They called it dark energy, and the discovery won the 2011 Nobel Prize.</p>
+
+    <h3 style="margin-top:24px">Einstein's accidental idea</h3>
+    <p class="muted">The simplest version is Einstein's <em>cosmological constant</em> (Λ): a fixed energy density baked into space itself. Add empty volume, add more of it. As the universe expands and matter thins out, this constant energy inevitably comes to dominate — which is exactly what happened a few billion years ago. Einstein introduced Λ for the wrong reason and later called it his "greatest blunder." It turned out to be one of his most prescient ideas.</p>
+
+    <div class="eq">Its behaviour is captured by one number, the equation of state:  w = pressure / energy density.<br>A cosmological constant has exactly w = −1. Measuring whether w is truly −1 is a central goal of modern cosmology.</div>
+
+    <div class="panel" style="margin-top:20px">
+      <h3 style="margin-top:0">Interactive · how the universe ends</h3>
+      <p class="muted" style="font-size:.92rem">The fate of the cosmos hangs on how dark energy behaves in the far future. Slide through the possibilities.</p>
+      <label class="ctl">Dark-energy behaviour →</label>
+      <input id="fateSlider" type="range" min="0" max="3" value="1">
+      <div class="readout" id="fateOut" style="margin-top:6px">Big Freeze / Heat Death</div>
+      <p id="fateDesc" class="muted" style="margin-top:8px"></p>
+    </div>
+
+    <h3 style="margin-top:28px">And now the plot twist</h3>
+    <p class="muted">Everyone assumed w = −1 exactly. But in 2024–2025, the <a href="https://www.desi.lbl.gov/" target="_blank" rel="noopener">DESI</a> survey — mapping tens of millions of galaxies — found hints that dark energy may have been <em>stronger in the past</em> and is now weakening. Combined with supernova and CMB data, DESI's 2025 release disfavors a constant Λ at up to ~4σ. It's not yet the 5σ threshold for a discovery, but if it holds, the standard model of cosmology will need rewriting. This is one of the most exciting open questions in the field — dig into it on the <a href="mysteries.html">Mysteries</a> page.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="pager">
+      <a class="prev" href="timeline.html"><div class="dir">← Previous</div><div class="ttl">Chapter 1 · Timeline</div></a>
+      <a class="next" href="expansion.html"><div class="dir">Next →</div><div class="ttl">Chapter 3 · The Expanding Universe</div></a>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  <div class="signature">Created by Lu</div>
+  <p class="src" style="margin-top:18px">Sources:
+    <a href="https://science.nasa.gov/universe/dark-matter-dark-energy/" target="_blank" rel="noopener">NASA · Dark matter &amp; dark energy</a> ·
+    <a href="https://www.desi.lbl.gov/" target="_blank" rel="noopener">DESI</a> ·
+    <a href="https://news.fnal.gov/2025/03/new-desi-results-strengthen-hints-that-dark-energy-may-evolve/" target="_blank" rel="noopener">Fermilab · DESI 2025</a>
+  </p>
+</div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>

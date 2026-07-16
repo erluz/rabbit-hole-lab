@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Expanding Universe · Cosmology 101</title>
+<link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+<canvas id="sky"></canvas>
+<div class="nebula"></div>
+
+<nav><div class="navin">
+  <div class="brand"><a href="index.html">◉ Cosmology<span>101</span></a></div>
+  <a class="link" href="index.html">Home</a>
+  <a class="link" href="timeline.html">Timeline</a>
+  <a class="link" href="matter.html">Dark Universe</a>
+  <a class="link" href="expansion.html">Expansion</a>
+  <a class="link" href="firstlight.html">First Light</a>
+  <a class="link" href="mysteries.html">Mysteries</a>
+  <a class="link" href="livesky.html">Live Sky</a>
+  <a class="link" href="toolkit.html">Toolkit</a>
+</div></nav>
+
+<div class="wrap phead reveal">
+  <div class="crumb"><a href="index.html">Home</a> / Chapter 3</div>
+  <h1>The Expanding Universe</h1>
+  <p class="lead">Galaxies aren't flying <em>through</em> space away from us. The space <em>between</em> them is growing — like raisins drifting apart in rising dough, or dots on an inflating balloon. Every observer, anywhere, sees the same thing: everything receding, faster the farther it is. This single fact is the observational bedrock of the Big Bang.</p>
+</div>
+
+<section style="padding-top:10px">
+  <div class="wrap reveal">
+    <h2>Hubble's Law</h2>
+    <p class="lead">In 1929, Edwin Hubble noticed that a galaxy's recession speed is proportional to its distance. Twice as far means twice as fast.</p>
+    <div class="eq">v = H₀ × d      (recession velocity = Hubble constant × distance)</div>
+    <p class="muted">Run that backwards and everything was together at one moment — the Big Bang. The constant H₀ sets the current expansion rate and, roughly, the age of the universe. Its value (~67–73 km/s per megaparsec) is measured two different ways that stubbornly disagree — the <a href="mysteries.html">Hubble Tension</a>.</p>
+
+    <div class="grid g2" style="margin-top:24px;align-items:start">
+      <div class="panel">
+        <canvas id="expcanvas" class="toy" height="300"></canvas>
+        <label class="ctl">Cosmic time — drag to run the universe forward &amp; back</label>
+        <input id="expTime" type="range" min="1" max="100" value="50">
+        <div style="display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted)">
+          <span>Scale factor a = <span id="scaleOut" class="readout" style="font-size:1rem">1.00</span></span>
+          <span>every galaxy sees itself at the center</span>
+        </div>
+        <p class="note">Notice that nothing is at the "center" of the expansion. From every galaxy's point of view, all the others rush away — because space itself is what's stretching.</p>
+      </div>
+      <div class="panel">
+        <h3 style="margin-top:0">Hubble's Law calculator</h3>
+        <p class="muted" style="font-size:.92rem">Try a galaxy 100 Mpc away (~326 million light-years). Slide H₀ between the two disputed values.</p>
+        <label class="ctl">Distance (megaparsecs, Mpc)</label>
+        <input id="hubDist" type="number" value="100" min="0" step="10">
+        <label class="ctl">Hubble constant H₀ = <span id="h0lbl" class="readout" style="font-size:1rem">67.4</span> km/s/Mpc</label>
+        <input id="hubH0" type="range" min="60" max="76" value="67.4" step="0.1">
+        <div style="margin-top:16px;font-size:.9rem;color:var(--muted)">Recession velocity</div>
+        <div class="readout" id="hubVel">6,740 km/s</div>
+        <div style="margin-top:6px;font-size:.9rem;color:var(--muted)">…that's <span id="hubC">2.25%</span> the speed of light.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>Redshift — the cosmic speedometer</h2>
+    <p class="lead">As space stretches, so does the light traveling through it. Wavelengths get longer, shifting toward the red end of the spectrum. The more the light is stretched, the farther and longer it has traveled — so redshift is simultaneously a measure of distance, speed, and lookback time.</p>
+    <div class="grid g3" style="margin-top:18px">
+      <div class="card"><h3>Cosmological redshift</h3><p class="muted">Caused by the expansion of space itself while light is in transit. This is the dominant effect for distant galaxies and the one cosmologists mean by "redshift z."</p></div>
+      <div class="card"><h3>Doppler redshift</h3><p class="muted">The familiar effect from an object's own motion through space — like a receding siren dropping in pitch. Matters for nearby objects.</p></div>
+      <div class="card"><h3>Gravitational redshift</h3><p class="muted">Light climbing out of a strong gravitational field loses energy and reddens. Predicted by general relativity; tiny but measurable.</p></div>
+    </div>
+    <div class="callout" style="margin-top:20px"><b>Key idea:</b> when you look far away, you look back in time. A galaxy at redshift z = 1 shows you light that left when the universe was about 6 billion years old. Play with the redshift ↔ time converter on the <a href="toolkit.html">Toolkit</a> page.</div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>Faster than light? Yes — and it's allowed</h2>
+    <p class="lead">Beyond a certain distance, galaxies recede faster than the speed of light. This doesn't break relativity: nothing is <em>moving</em> through space faster than light. It's the space in between that's expanding, and there's no speed limit on how fast space itself can grow.</p>
+    <p class="muted">These galaxies are still visible — their ancient light left long ago and is still arriving. But we can never reach them or send them a signal; they've crossed our cosmic horizon. As dark energy accelerates the expansion, more and more of the universe is slipping permanently beyond reach.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap reveal">
+    <h2>A common misconception, cleared up</h2>
+    <div class="grid g2" style="margin-top:14px">
+      <div class="card"><h3>❌ "There was a center where the Big Bang exploded."</h3><p class="muted">No. The Big Bang happened <em>everywhere</em> at once. Space itself was dense everywhere and has been expanding everywhere since. There's no special point and no edge you could fly to.</p></div>
+      <div class="card"><h3>❌ "Galaxies are flying through space away from us."</h3><p class="muted">Mostly no. Their <em>recession</em> is space stretching between us. Galaxies do have small local motions on top of that (Andromeda is actually heading toward us), but the overall flow is expansion.</p></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="pager">
+      <a class="prev" href="matter.html"><div class="dir">← Previous</div><div class="ttl">Chapter 2 · The Dark Universe</div></a>
+      <a class="next" href="firstlight.html"><div class="dir">Next →</div><div class="ttl">Chapter 4 · First Light &amp; the CMB</div></a>
+    </div>
+  </div>
+</section>
+
+<footer><div class="wrap">
+  <div class="signature">Created by Lu</div>
+  <p class="src" style="margin-top:18px">Sources:
+    <a href="https://science.nasa.gov/universe/the-expanding-universe/" target="_blank" rel="noopener">NASA · The expanding universe</a> ·
+    <a href="https://www.astro.ucla.edu/~wright/cosmo_01.htm" target="_blank" rel="noopener">Ned Wright · Cosmology tutorial</a> ·
+    <a href="https://cerncourier.com/a/the-hubble-tension/" target="_blank" rel="noopener">CERN Courier · Hubble tension</a>
+  </p>
+</div></footer>
+<script src="assets/site.js"></script>
+</body>
+</html>
