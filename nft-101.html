@@ -192,22 +192,6 @@
   .myth h4{font-size:17px;margin:6px 0}
   .myth p{margin:0;font-size:14px;color:#33404f}
 
-  /* TUTOR */
-  .tutor{padding:20px}
-  .chatbox{background:#161d2e;border:1px solid #2a3550;border-radius:8px;padding:14px;height:280px;overflow-y:auto;margin-bottom:12px;display:flex;flex-direction:column;gap:10px}
-  .msg{max-width:88%;padding:9px 13px;border-radius:12px;font-size:14.5px;line-height:1.5;white-space:pre-wrap}
-  .msg.u{align-self:flex-end;background:var(--rare);color:#fff;border-bottom-right-radius:3px}
-  .msg.a{align-self:flex-start;background:#26304a;color:#e7ecf7;border-bottom-left-radius:3px}
-  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
-  .chip{background:#222c44;border:1px solid #35446a;color:#cdd6ea;font-size:12.5px;padding:6px 11px;border-radius:20px;cursor:pointer;transition:background .15s}
-  .chip:hover{background:#2c3a5c}
-  .inputrow{display:flex;gap:8px}
-  .inputrow input{background:#161d2e;color:#e7ecf7;border-color:#2a3550;font-family:'Inter'}
-  .typing{display:inline-flex;gap:4px}
-  .typing span{width:6px;height:6px;border-radius:50%;background:#8ea0c8;animation:td 1s infinite}
-  .typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
-  @keyframes td{0%,60%,100%{opacity:.25}30%{opacity:1}}
-
   /* QUIZ */
   .quiz{padding:22px}
   .qq{font-weight:600;font-size:18px;margin-bottom:14px}
@@ -258,7 +242,6 @@
       <a href="#history">History</a>
       <a href="#risks">Risks</a>
       <a href="#live">Live</a>
-      <a href="#tutor">AI Tutor</a>
       <a href="#quiz">Quiz</a>
       <a href="#glossary">Glossary</a>
     </div>
@@ -274,7 +257,6 @@
       <p class="lede">Not the picture — the <b>provable record</b> of ownership behind it, living on a blockchain that nobody controls. The best way to get it is to make one. Press mint and watch a one-of-a-kind token get generated from pure math, right here.</p>
       <div class="cta-row">
         <a href="#basics" class="btn rare">Start learning ↓</a>
-        <a href="#tutor" class="btn ghost">Ask the AI tutor</a>
       </div>
       <div class="legend">
         <span class="cap" style="width:100%;margin-bottom:-8px">Rarity tiers (rarest trait sets the tier):</span>
@@ -555,34 +537,6 @@
       </div>
     </div>
     <p class="note" style="color:#8593AC">Prices via CoinGecko's public API. If a value shows "estimate," the live call was blocked or rate-limited and a recent reference figure is shown. Nothing here is financial advice.</p>
-  </div>
-</section>
-
-<!-- TUTOR -->
-<section id="tutor">
-  <div class="wrap">
-    <div class="sechead">
-      <div class="num">11 / Ask anything</div>
-      <h2>Your AI NFT tutor</h2>
-      <p>Still fuzzy on something — gas, royalties, how to spot a scam? Ask in plain English. Powered by Claude and briefed to stay accurate, beginner-friendly, and honest about risk.</p>
-    </div>
-    <div class="card tutor">
-      <div class="chips" id="tutorChips">
-        <button class="chip" data-q="Explain what a 'floor price' is like I'm new to this.">What's a floor price?</button>
-        <button class="chip" data-q="If I can screenshot an NFT, why would anyone pay for it?">Why pay if I can screenshot it?</button>
-        <button class="chip" data-q="How do I avoid NFT scams as a beginner? Give me a checklist.">How do I avoid scams?</button>
-        <button class="chip" data-q="What's the difference between minting and buying an NFT?">Minting vs buying?</button>
-        <button class="chip" data-q="Do NFTs hurt the environment? Give me the honest answer.">Are NFTs bad for the planet?</button>
-      </div>
-      <div class="chatbox" id="chatbox" aria-live="polite">
-        <div class="msg a">Hey! I'm your NFT tutor. Ask me anything — how minting works, what "gas" is, whether a collection looks legit, how to keep your wallet safe. Tap a suggestion above or type below. 👇</div>
-      </div>
-      <div class="inputrow">
-        <input type="text" id="tutorInput" placeholder="Ask an NFT question…" autocomplete="off">
-        <button class="btn rare" id="tutorSend">Send</button>
-      </div>
-      <p class="note">In the Claude app this is the full Claude model. Opened as a downloaded file, it answers common questions from a built-in bank. Concepts only — no investment or trading advice.</p>
-    </div>
   </div>
 </section>
 
@@ -924,60 +878,6 @@ function shade(hex,amt){
       conv();
     });
   conv();
-})();
-
-/* ===== AI TUTOR (live in-app + offline fallback) ===== */
-(function(){
-  var box=document.getElementById('chatbox'),input=document.getElementById('tutorInput'),send=document.getElementById('tutorSend');
-  var history=[]; var MAX=10;
-  var SYS="You are a warm, accurate NFT tutor for complete beginners. Keep answers short (2-4 short paragraphs max), concrete, jargon-light; define any term you must use. Be precise about how NFTs, token standards (ERC-721, ERC-1155), minting, gas, metadata/IPFS storage, royalties, marketplaces and wallets work. Be honest and balanced about risks, scams, volatility and criticism of NFTs \u2014 never hype. If asked for price predictions, what to buy, or investment/trading advice, gently decline and explain you only teach concepts and that NFTs are high-risk. Never invent statistics; if unsure, say so. No markdown headers; short plain paragraphs only.";
-  var BANK=[
-    {k:["floor"],a:"The floor price is the cheapest an item in a collection is currently listed for \u2014 the lowest entry ticket to own one. People use it as a rough gauge of value, but it can mislead: it only reflects the single cheapest listing, and thin or faked trading can move it. A low floor is not automatically a bargain, and a high floor does not guarantee you can actually sell at that price."},
-    {k:["screenshot","right click","right-click","copy","why pay","why would anyone"],a:"You can copy the image, but you cannot copy the on-chain record of ownership \u2014 that is the part an NFT actually is. It is like photographing a painting: you get a picture, not the original with its provenance. Whether that ownership record is worth anything is a fair separate question: for some it is status, community access, or supporting an artist; for others it is pure speculation."},
-    {k:["scam","safe","avoid","drain","phishing","rug"],a:"A quick safety checklist: never share your seed phrase with anyone or any site; only mint from official links you have bookmarked and double-check the URL; be very suspicious of surprise free airdrops and 'you won' DMs; read what a transaction does before signing, since drainers hide in a bad 'approve'; use a separate low-value wallet for minting; and research the team. If returns are 'guaranteed,' it is a scam."},
-    {k:["mint","minting","buying","buy"],a:"Minting is creating a brand-new token on the blockchain for the first time \u2014 you become its first owner and usually pay a gas fee to write it on-chain. Buying is purchasing an NFT that already exists from its current owner on a marketplace, at whatever price they accept. Minting is the primary sale (often from the creator); buying is the secondary market."},
-    {k:["environment","energy","climate","planet","carbon"],a:"Honest answer: it depends heavily on the chain. The old criticism came from Ethereum's Proof of Work era, when transactions were energy-hungry. Since Ethereum switched to Proof of Stake in 2022, its energy use dropped by roughly 99.9%, so minting there now uses very little. NFTs on Bitcoin (Ordinals) still carry Proof of Work's higher footprint. So 'NFTs kill the planet' is outdated for most of today's activity, but the chain matters."},
-    {k:["what is an nft","what is nft","what are nfts","non-fungible","non fungible"],a:"An NFT (non-fungible token) is a unique, ownable record on a blockchain, usually linked to an image, video, or other item. Non-fungible just means not interchangeable \u2014 unlike a dollar or 1 ETH, each NFT is one of a kind. The blockchain guarantees a single owner and a permanent transfer history; the token itself is just an ID, an owner's address, and a link to its metadata."},
-    {k:["gas","fee"],a:"Gas is the network fee you pay to do something on-chain, like minting or transferring an NFT \u2014 it compensates the validators who process your transaction. It is paid in the chain's coin (ETH on Ethereum) and rises when the network is busy, which is why minting during quiet hours costs less. 'Lazy minting' shifts the gas to the buyer at the first sale so creators can list for free."},
-    {k:["erc","standard","721","1155"],a:"A token standard is a shared blueprint so every wallet and marketplace understands your token. ERC-721 is the classic NFT standard: one unique token, one owner \u2014 used for art and PFPs like CryptoPunks. ERC-1155 is a flexible multi-token standard where one contract holds both unique items and editions, great for games and tickets. Other chains have their own (Solana's Metaplex, Bitcoin Ordinals)."},
-    {k:["ipfs","arweave","storage","stored","where does","where is","metadata"],a:"Usually the image is not on the blockchain \u2014 that is too expensive \u2014 so the token stores a link, and where it points matters a lot. On-chain storage is permanent but costly; IPFS or Arweave is decentralized and durable as long as the file is pinned; a plain company URL is cheap but fragile \u2014 if that server dies, the token points to nothing. Always check where a collection stores its media."},
-    {k:["royalty","royalties"],a:"A royalty is a percentage the original creator earns each time their NFT is resold \u2014 say 5% of every secondary sale. It was a big draw for artists, but most marketplaces now make royalties optional to attract traders, so they are not always paid. Creators who want them guaranteed enforce royalties at the smart-contract level using tools like Manifold."},
-    {k:["wallet","seed phrase","private key","metamask","phantom"],a:"A wallet (like MetaMask or Phantom) holds the keys that prove you own your NFTs and coins \u2014 it does not store the items themselves; the blockchain does. Your public address is safe to share so people can send you things; your secret seed phrase must never be shared or typed into a website. Guard the seed phrase like the master key it is \u2014 there is no reset."}
-  ];
-  var DEFAULT="I can only reach the full AI tutor when this page runs inside the Claude app. In offline mode I answer common questions from a built-in bank \u2014 try a suggestion chip above, or ask about minting, gas, floor price, scams, storage/IPFS, royalties, standards, or wallets. The Glossary and Resources below cover a lot too.";
-  function add(role,text){var d=document.createElement('div');d.className='msg '+(role==='user'?'u':'a');d.textContent=text;box.appendChild(d);box.scrollTop=box.scrollHeight;return d;}
-  function typing(){var d=document.createElement('div');d.className='msg a';d.innerHTML='<span class="typing"><span></span><span></span><span></span></span>';box.appendChild(d);box.scrollTop=box.scrollHeight;return d;}
-  function localAnswer(q){
-    var ql=q.toLowerCase(),best=null,bs=0;
-    BANK.forEach(function(it){var s=0;it.k.forEach(function(w){if(ql.indexOf(w)>-1)s++;});if(s>bs){bs=s;best=it;}});
-    return best?best.a:DEFAULT;
-  }
-  function trimHist(){ if(history.length>MAX)history=history.slice(history.length-MAX); while(history.length&&history[0].role!=='user')history.shift(); }
-  async function ask(q){
-    if(!q.trim())return;
-    add('user',q); input.value=''; send.disabled=true;
-    var msgs=history.concat([{role:'user',content:q}]);
-    var t=typing(); var ok=false,reply='',rate=false;
-    try{
-      var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:SYS,messages:msgs})});
-      var data=await res.json();
-      if(res.ok){reply=(data.content||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('\n').trim(); if(reply)ok=true;}
-      else if(res.status===429||res.status===529)rate=true;
-    }catch(e){}
-    t.remove();
-    if(ok){
-      add('assistant',reply);
-      history=msgs.concat([{role:'assistant',content:reply}]); trimHist();
-    }else{
-      if(rate)add('assistant',"The live tutor is busy right now \u2014 try again in a moment for a full answer. Here's a built-in one in the meantime:");
-      add('assistant',localAnswer(q));
-      // failed turns are NOT committed to model history, so role order stays valid
-    }
-    send.disabled=false; input.focus();
-  }
-  send.addEventListener('click',function(){ask(input.value);});
-  input.addEventListener('keydown',function(e){if(e.key==='Enter')ask(input.value);});
-  document.getElementById('tutorChips').addEventListener('click',function(e){var c=e.target.closest('.chip');if(c)ask(c.getAttribute('data-q'));});
 })();
 
 /* ===== QUIZ ===== */
