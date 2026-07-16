@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NFTs 101 — Mint the Idea</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800;900&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#E9ECF1; --ink:#101521; --panel:#FFFFFF; --panel-2:#F4F6FA;
+    --line:#C6D0DE; --line-strong:#A9B6C9; --muted:#5A6678;
+    --cobalt:#2340FF; --cobalt-soft:#E6EAFF;
+    --gold:#D98600; --gold-soft:#FBEDD2;
+    --rare:#7A2FE0; --rare-soft:#EFE4FC;
+    --valid:#0E8A57; --valid-soft:#DBF3E8;
+    --invalid:#D42638; --invalid-soft:#FBE0E3;
+    --r:7px; --maxw:1120px;
+    --shadow:0 1px 0 var(--line-strong), 0 2px 6px rgba(16,21,33,.05);
+    /* rarity ladder */
+    --t-common:#6B7688; --t-uncommon:#0E8A57; --t-rare:#2340FF; --t-epic:#7A2FE0; --t-legendary:#D98600;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} *{animation-duration:.001ms!important;transition-duration:.001ms!important}}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif; line-height:1.6; font-size:16px;
+    background-image:
+      linear-gradient(var(--line) 1px,transparent 1px),
+      linear-gradient(90deg,var(--line) 1px,transparent 1px);
+    background-size:34px 34px; background-position:-1px -1px;
+  }
+  ::selection{background:var(--rare);color:#fff}
+  a{color:var(--cobalt);text-decoration:none}
+  a:hover{text-decoration:underline}
+  h1,h2,h3,h4{font-family:'Archivo',sans-serif;line-height:1.05;margin:0;letter-spacing:-.02em}
+  .mono{font-family:'IBM Plex Mono',monospace}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 22px}
+  .eyebrow{font-family:'IBM Plex Mono',monospace;font-size:12px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
+  button{font-family:'Inter',sans-serif;cursor:pointer}
+  button:focus-visible,a:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible,.qopt:focus-visible{outline:3px solid var(--rare);outline-offset:2px}
+  .btn{background:var(--ink);color:#fff;border:1px solid var(--ink);padding:11px 18px;border-radius:var(--r);font-weight:600;font-size:14px;transition:transform .08s,background .15s}
+  .btn:hover{background:#000;transform:translateY(-1px)}
+  .btn:active{transform:translateY(0)}
+  .btn.rare{background:var(--rare);border-color:var(--rare)}
+  .btn.rare:hover{background:#661fc4}
+  .btn.cobalt{background:var(--cobalt);border-color:var(--cobalt)}
+  .btn.cobalt:hover{background:#1730d8}
+  .btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line-strong)}
+  .btn.ghost:hover{background:var(--panel-2);transform:translateY(-1px)}
+  .btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+  .btn.sm{padding:7px 12px;font-size:13px}
+
+  nav{position:sticky;top:0;z-index:50;background:rgba(233,236,241,.86);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .navbar{display:flex;align-items:center;justify-content:space-between;height:56px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Archivo';font-weight:900;font-size:17px;letter-spacing:-.03em}
+  .brand .cube{width:18px;height:18px;border:2px solid var(--ink);border-radius:3px;position:relative;background:var(--rare)}
+  .brand .cube::after{content:"";position:absolute;inset:3px;border:1px solid var(--ink)}
+  .navlinks{display:flex;gap:2px;flex-wrap:wrap}
+  .navlinks a{color:var(--muted);font-size:13px;font-weight:500;padding:6px 9px;border-radius:5px}
+  .navlinks a:hover{color:var(--ink);background:var(--panel-2);text-decoration:none}
+  .progress{position:fixed;top:0;left:0;height:3px;background:var(--rare);width:0;z-index:60;transition:width .1s}
+  @media(max-width:900px){.navlinks{display:none}}
+
+  section{padding:76px 0;border-bottom:1px solid var(--line)}
+  .sechead{margin-bottom:34px;max-width:760px}
+  .sechead .num{font-family:'IBM Plex Mono';color:var(--rare);font-weight:600;font-size:13px}
+  .sechead h2{font-size:clamp(28px,4.2vw,46px);font-weight:900;margin:8px 0 12px}
+  .sechead p{color:var(--muted);font-size:17px;margin:0}
+  .dark{background:var(--ink);color:#E7EAF1;border-color:#222c3f;background-image:none}
+  .dark .sechead p{color:#96A2B8}
+  .dark .eyebrow{color:#8593AC}
+  .dark a{color:#B79BFF}
+
+  .card{background:var(--panel);border:1px solid var(--line-strong);border-radius:var(--r);box-shadow:var(--shadow)}
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  @media(max-width:820px){.g2,.g3,.g4{grid-template-columns:1fr}}
+
+  textarea,input[type=text],input[type=number],select{
+    width:100%;font-family:'IBM Plex Mono',monospace;font-size:14px;color:var(--ink);
+    background:var(--panel-2);border:1px solid var(--line-strong);border-radius:6px;padding:10px 12px;resize:vertical
+  }
+  label.fld{display:block;font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin:0 0 5px}
+
+  /* HERO */
+  .hero{padding-top:52px;padding-bottom:64px}
+  .hero-grid{display:grid;grid-template-columns:1.02fr .98fr;gap:40px;align-items:center}
+  @media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:28px}}
+  .hero h1{font-size:clamp(38px,7vw,74px);font-weight:900;line-height:.95}
+  .hero h1 .hl{color:var(--rare)}
+  .hero .lede{font-size:18px;color:var(--muted);max-width:470px;margin:18px 0 26px}
+  .hero .cta-row{display:flex;gap:12px;flex-wrap:wrap}
+  .legend{display:flex;gap:14px;flex-wrap:wrap;margin-top:26px}
+  .legend .l{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);font-weight:500}
+  .legend .l .sw{width:11px;height:11px;border-radius:3px}
+
+  /* MINTER */
+  .minter{padding:20px}
+  .avatarframe{background:var(--panel-2);border:1px solid var(--line-strong);border-radius:10px;padding:14px;position:relative}
+  .avatarframe svg{width:100%;height:auto;display:block;border-radius:6px;background:#fff}
+  .tierbadge{position:absolute;top:22px;right:22px;font-family:'IBM Plex Mono';font-size:11px;font-weight:600;padding:5px 10px;border-radius:20px;color:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+  .tokenmeta{display:flex;justify-content:space-between;align-items:baseline;margin-top:14px}
+  .tokenmeta .id{font-family:'Archivo';font-weight:900;font-size:24px}
+  .tokenmeta .col{font-family:'IBM Plex Mono';font-size:12px;color:var(--muted)}
+  .traits{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+  .trait{background:var(--panel-2);border:1px solid var(--line-strong);border-radius:6px;padding:7px 10px}
+  .trait .k{font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .trait .v{font-weight:600;font-size:13px;display:flex;justify-content:space-between;align-items:center;gap:6px}
+  .trait .pct{font-family:'IBM Plex Mono';font-size:10px;padding:1px 5px;border-radius:10px;color:#fff}
+  .gallery{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+  .gallery .th{width:52px;height:52px;border-radius:6px;overflow:hidden;border:2px solid var(--line-strong);cursor:pointer;transition:transform .1s,border-color .15s}
+  .gallery .th:hover{transform:translateY(-2px);border-color:var(--rare)}
+  .gallery .th svg{width:100%;height:100%;display:block}
+
+  /* FUNGIBLE COMPARISON */
+  .fvn{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:720px){.fvn{grid-template-columns:1fr}}
+  .fvn .col{padding:22px;text-align:center}
+  .token-item{display:inline-flex;flex-direction:column;align-items:center;gap:6px;margin:0 8px}
+  .coin{width:74px;height:74px;border-radius:50%;background:linear-gradient(145deg,#f4d788,#d98600);border:3px solid #b97300;display:flex;align-items:center;justify-content:center;font-family:'Archivo';font-weight:900;color:#7a4d00;font-size:22px}
+  .fvn .swapbtn{margin-top:16px}
+  .fvn .verdict{margin-top:12px;font-size:13px;min-height:20px;font-weight:600}
+
+  /* INSPECTOR */
+  .inspector{padding:22px}
+  .kvrow{display:grid;grid-template-columns:150px 1fr;gap:8px;padding:9px 0;border-top:1px dashed var(--line-strong);font-size:14px;align-items:baseline}
+  .kvrow .k{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+  .kvrow .v{font-family:'IBM Plex Mono';font-size:13px;word-break:break-all}
+  .jsonblock{font-family:'IBM Plex Mono';font-size:12.5px;background:var(--ink);color:#B79BFF;padding:14px;border-radius:8px;white-space:pre;overflow-x:auto;line-height:1.6;margin-top:14px;border:1px solid #2a3550}
+  .jsonblock .key{color:#7CF0B8} .jsonblock .str{color:#F0C57C} .jsonblock .num{color:#8AB4FF}
+
+  /* STORAGE TOGGLE */
+  .segbar{display:inline-flex;background:var(--panel-2);border:1px solid var(--line-strong);border-radius:8px;padding:4px;gap:4px;margin-bottom:18px;flex-wrap:wrap}
+  .segbar button{border:none;background:transparent;padding:8px 16px;border-radius:6px;font-weight:600;font-size:13.5px;color:var(--muted)}
+  .segbar button.on{background:var(--ink);color:#fff}
+  .storagepanel{padding:22px}
+  .durability{display:flex;align-items:center;gap:10px;margin-top:8px}
+  .dbar{flex:1;height:12px;border-radius:6px;background:var(--panel-2);overflow:hidden;border:1px solid var(--line-strong)}
+  .dbar span{display:block;height:100%;transition:width .5s,background .5s}
+  .imgstate{width:100%;height:130px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono';font-size:13px;margin-top:14px;border:2px dashed var(--line-strong);color:var(--muted);transition:all .4s}
+  .imgstate.broken{background:var(--invalid-soft);border-color:var(--invalid);color:var(--invalid)}
+  .imgstate.ok{background:var(--valid-soft);border-color:var(--valid);color:var(--valid)}
+
+  .concept{padding:20px}
+  .concept .ic{width:38px;height:38px;border-radius:8px;background:var(--rare-soft);display:flex;align-items:center;justify-content:center;font-family:'Archivo';font-weight:900;color:var(--rare);margin-bottom:12px;font-size:18px}
+  .concept h4{font-size:18px;margin-bottom:6px}
+  .concept p{margin:0;font-size:14.5px;color:#33404f}
+
+  /* STANDARDS / MARKETS COMPARISON */
+  .cmp{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:820px){.cmp{grid-template-columns:1fr}}
+  .cmp .col{padding:22px}
+  .cmp .col h3{font-size:22px;margin-bottom:4px}
+  .cmp .col .tag{font-family:'IBM Plex Mono';font-size:12px;color:var(--muted)}
+  .kv{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px dashed var(--line-strong);font-size:14px}
+  .kv b{font-weight:600}.kv span{color:var(--muted);text-align:right}
+
+  table.mkt{width:100%;border-collapse:collapse;font-size:14px}
+  table.mkt th,table.mkt td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line-strong)}
+  table.mkt th{font-family:'IBM Plex Mono';font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+  table.mkt td:first-child{font-weight:600}
+  .chainpill{font-size:11px;font-family:'IBM Plex Mono';padding:2px 7px;border-radius:10px;background:var(--cobalt-soft);color:var(--cobalt)}
+
+  /* TIMELINE */
+  .tl{position:relative;padding-left:26px;margin-top:8px}
+  .tl::before{content:"";position:absolute;left:6px;top:4px;bottom:4px;width:2px;background:var(--line-strong)}
+  .tl .ev{position:relative;padding:0 0 18px 6px}
+  .tl .ev::before{content:"";position:absolute;left:-26px;top:5px;width:11px;height:11px;border-radius:50%;background:var(--panel);border:2px solid var(--rare)}
+  .tl .ev .d{font-family:'IBM Plex Mono';font-size:12px;color:var(--rare);font-weight:600}
+  .tl .ev .t{font-weight:600;font-size:15px}
+  .tl .ev .x{color:var(--muted);font-size:14px}
+
+  /* STATS */
+  .stat{padding:20px;text-align:left}
+  .stat .k{font-family:'IBM Plex Mono';font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+  .stat .v{font-family:'Archivo';font-weight:900;font-size:30px;margin-top:6px;line-height:1}
+  .stat .s{font-size:12px;color:var(--muted);margin-top:6px}
+  .livebadge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-family:'IBM Plex Mono';color:var(--valid);font-weight:600}
+  .livebadge .dot{width:7px;height:7px;background:var(--valid);border-radius:50%;animation:blink 1.4s infinite}
+  @keyframes blink{50%{opacity:.25}}
+  .conv{display:flex;gap:10px;align-items:flex-end;flex-wrap:wrap;margin-top:6px}
+
+  /* MYTH CARDS */
+  .myth{padding:20px}
+  .myth .tagline{font-family:'IBM Plex Mono';font-size:11px;font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+  .myth.debunk .tagline{color:var(--invalid)} .myth.truth .tagline{color:var(--valid)}
+  .myth h4{font-size:17px;margin:6px 0}
+  .myth p{margin:0;font-size:14px;color:#33404f}
+
+  /* TUTOR */
+  .tutor{padding:20px}
+  .chatbox{background:#161d2e;border:1px solid #2a3550;border-radius:8px;padding:14px;height:280px;overflow-y:auto;margin-bottom:12px;display:flex;flex-direction:column;gap:10px}
+  .msg{max-width:88%;padding:9px 13px;border-radius:12px;font-size:14.5px;line-height:1.5;white-space:pre-wrap}
+  .msg.u{align-self:flex-end;background:var(--rare);color:#fff;border-bottom-right-radius:3px}
+  .msg.a{align-self:flex-start;background:#26304a;color:#e7ecf7;border-bottom-left-radius:3px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+  .chip{background:#222c44;border:1px solid #35446a;color:#cdd6ea;font-size:12.5px;padding:6px 11px;border-radius:20px;cursor:pointer;transition:background .15s}
+  .chip:hover{background:#2c3a5c}
+  .inputrow{display:flex;gap:8px}
+  .inputrow input{background:#161d2e;color:#e7ecf7;border-color:#2a3550;font-family:'Inter'}
+  .typing{display:inline-flex;gap:4px}
+  .typing span{width:6px;height:6px;border-radius:50%;background:#8ea0c8;animation:td 1s infinite}
+  .typing span:nth-child(2){animation-delay:.15s}.typing span:nth-child(3){animation-delay:.3s}
+  @keyframes td{0%,60%,100%{opacity:.25}30%{opacity:1}}
+
+  /* QUIZ */
+  .quiz{padding:22px}
+  .qq{font-weight:600;font-size:18px;margin-bottom:14px}
+  .qopts{display:grid;gap:9px}
+  .qopt{text-align:left;background:var(--panel-2);border:1px solid var(--line-strong);border-radius:6px;padding:11px 14px;font-size:14.5px;font-family:'Inter';color:var(--ink);transition:background .12s}
+  .qopt:hover:not(:disabled){background:var(--rare-soft);border-color:var(--rare)}
+  .qopt.correct{background:var(--valid-soft);border-color:var(--valid);color:var(--valid);font-weight:600}
+  .qopt.wrong{background:var(--invalid-soft);border-color:var(--invalid);color:var(--invalid)}
+  .qexpl{margin-top:14px;padding:12px 14px;background:var(--rare-soft);border-radius:6px;font-size:14px;display:none}
+  .qexpl.show{display:block}
+  .qbar{display:flex;justify-content:space-between;align-items:center;margin-top:16px;font-size:14px;color:var(--muted)}
+
+  .gitem{border-bottom:1px solid var(--line-strong)}
+  .gitem summary{cursor:pointer;padding:14px 4px;font-weight:600;font-size:15.5px;list-style:none;display:flex;justify-content:space-between;align-items:center}
+  .gitem summary::-webkit-details-marker{display:none}
+  .gitem summary::after{content:"+";font-family:'IBM Plex Mono';color:var(--rare);font-size:20px;font-weight:600}
+  .gitem[open] summary::after{content:"–"}
+  .gitem p{margin:0 4px 16px;color:#38424f;font-size:14.5px}
+
+  .res{display:flex;gap:12px;align-items:flex-start;padding:16px;text-decoration:none;color:var(--ink);transition:transform .1s}
+  .res:hover{transform:translateY(-2px);text-decoration:none}
+  .res .rn{font-family:'IBM Plex Mono';font-size:11px;color:var(--rare);font-weight:600}
+  .res h4{font-size:16px;margin:2px 0 4px}
+  .res p{margin:0;font-size:13px;color:var(--muted)}
+
+  .crosslink{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:20px 22px;background:var(--ink);color:#fff;border-radius:var(--r);flex-wrap:wrap}
+  .crosslink h4{font-size:19px;color:#fff}
+  .crosslink p{margin:2px 0 0;color:#9aa6bd;font-size:14px}
+
+  footer{padding:40px 0 60px;text-align:center;color:var(--muted);font-size:13px}
+  .note{font-size:13px;color:var(--muted);margin-top:10px}
+  .cap{font-family:'IBM Plex Mono';font-size:11px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav>
+  <div class="wrap navbar">
+    <div class="brand"><span class="cube"></span> NFTs&nbsp;101</div>
+    <div class="navlinks">
+      <a href="#basics">Fungibility</a>
+      <a href="#inside">What it is</a>
+      <a href="#storage">The art</a>
+      <a href="#mint">Minting</a>
+      <a href="#standards">Standards</a>
+      <a href="#markets">Markets</a>
+      <a href="#uses">Uses</a>
+      <a href="#history">History</a>
+      <a href="#risks">Risks</a>
+      <a href="#live">Live</a>
+      <a href="#tutor">AI Tutor</a>
+      <a href="#quiz">Quiz</a>
+      <a href="#glossary">Glossary</a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero wrap">
+  <div class="hero-grid">
+    <div>
+      <div class="eyebrow">A hands-on introduction · you mint the idea</div>
+      <h1>An NFT is a <span class="hl">unique token</span> you can actually own.</h1>
+      <p class="lede">Not the picture — the <b>provable record</b> of ownership behind it, living on a blockchain that nobody controls. The best way to get it is to make one. Press mint and watch a one-of-a-kind token get generated from pure math, right here.</p>
+      <div class="cta-row">
+        <a href="#basics" class="btn rare">Start learning ↓</a>
+        <a href="#tutor" class="btn ghost">Ask the AI tutor</a>
+      </div>
+      <div class="legend">
+        <span class="cap" style="width:100%;margin-bottom:-8px">Rarity tiers (rarest trait sets the tier):</span>
+        <div class="l"><span class="sw" style="background:var(--t-common)"></span>Common</div>
+        <div class="l"><span class="sw" style="background:var(--t-uncommon)"></span>Uncommon</div>
+        <div class="l"><span class="sw" style="background:var(--t-rare)"></span>Rare</div>
+        <div class="l"><span class="sw" style="background:var(--t-epic)"></span>Epic</div>
+        <div class="l"><span class="sw" style="background:var(--t-legendary)"></span>Legendary</div>
+      </div>
+    </div>
+    <div class="card minter" id="minterCard">
+      <div class="eyebrow" style="margin-bottom:10px">Live mint · deterministic · seeded by SHA-256</div>
+      <div class="avatarframe">
+        <div class="tierbadge" id="tierBadge">—</div>
+        <div id="avatarHolder"></div>
+      </div>
+      <div class="tokenmeta">
+        <div class="id" id="tokenId">Pixel Punks #—</div>
+        <div class="col" id="collSize">of 10,000</div>
+      </div>
+      <div class="traits" id="traitList"></div>
+      <div class="cta-row" style="margin-top:16px">
+        <button class="btn rare" id="mintBtn">✦ Mint a new one</button>
+        <button class="btn ghost sm" id="inspectJump">Inspect on-chain ↓</button>
+      </div>
+      <div class="cap" style="margin-top:12px">Your minted tokens</div>
+      <div class="gallery" id="gallery"></div>
+    </div>
+  </div>
+</header>
+
+<!-- FUNGIBILITY -->
+<section id="basics">
+  <div class="wrap">
+    <div class="sechead">
+      <div class="num">01 / The word in the name</div>
+      <h2>Fungible vs non-fungible</h2>
+      <p>"Non-fungible" just means <b>not interchangeable</b>. One dollar is exactly like any other dollar — swap them and nothing changes; that's <i>fungible</i>. A specific painting, ticket, or collectible is one of a kind — that's <i>non-fungible</i>. NFTs bring that second idea to the digital world.</p>
+    </div>
+    <div class="fvn">
+      <div class="card col">
+        <div class="eyebrow" style="color:var(--gold)">Fungible · like a coin or a dollar</div>
+        <h3 style="font-size:20px;margin:8px 0 14px">1 ETH = 1 ETH</h3>
+        <div>
+          <span class="token-item"><span class="coin" id="coinA">Ξ</span><span class="cap">Coin A</span></span>
+          <span class="token-item"><span class="coin" id="coinB">Ξ</span><span class="cap">Coin B</span></span>
+        </div>
+        <div><button class="btn ghost sm swapbtn" id="swapFung">⇄ Swap them</button></div>
+        <div class="verdict" id="fungVerdict" style="color:var(--muted)">Identical &amp; interchangeable.</div>
+      </div>
+      <div class="card col">
+        <div class="eyebrow" style="color:var(--rare)">Non-fungible · like an NFT</div>
+        <h3 style="font-size:20px;margin:8px 0 14px">#7 ≠ #8</h3>
+        <div id="nftPairHolder" style="display:flex;justify-content:center;gap:16px"></div>
+        <div style="margin-top:12px"><button class="btn ghost sm swapbtn" id="swapNonFung">⇄ Swap them</button></div>
+        <div class="verdict" id="nftVerdict" style="color:var(--muted)">Each is unique — the swap actually matters.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHAT IT IS -->
+<section id="inside" class="dark">
+  <div class="wrap">
+    <div class="sechead">
+      <div class="num" style="color:#B79BFF">02 / Under the hood</div>
+      <h2>What an NFT actually is</h2>
+      <p>Strip away the hype and an NFT is just a row in a smart contract: a unique <b>token ID</b>, an <b>owner's address</b>, and a link to some <b>metadata</b>. That's it. The blockchain guarantees only one owner and a permanent history of every transfer. Below is the on-chain record for the token in the minter above.</p>
+    </div>
+    <div class="grid g2">
+      <div class="card inspector" style="background:#161d2e;border-color:#2a3550;color:#e7ecf7">
+        <div class="eyebrow" style="color:#8593AC;margin-bottom:6px">On-chain record</div>
+        <div class="kvrow"><span class="k" style="color:#8593AC">Contract</span><span class="v" id="inspContract" style="color:#e7ecf7">—</span></div>
+        <div class="kvrow"><span class="k" style="color:#8593AC">Standard</span><span class="v" id="inspStd" style="color:#e7ecf7">ERC-721</span></div>
+        <div class="kvrow"><span class="k" style="color:#8593AC">Token ID</span><span class="v" id="inspId" style="color:#e7ecf7">—</span></div>
+        <div class="kvrow"><span class="k" style="color:#8593AC">Owner</span><span class="v" id="inspOwner" style="color:#7CF0B8">—</span></div>
+        <div class="kvrow"><span class="k" style="color:#8593AC">tokenURI</span><span class="v" id="inspUri" style="color:#B79BFF">—</span></div>
+      </div>
+      <div>
+        <div class="eyebrow" style="color:#8593AC;margin-bottom:6px">…which points to this metadata (JSON)</div>
+        <div class="jsonblock" id="metaJson">—</div>
+        <p class="note" style="color:#8593AC">The contract stores who owns token #N. The <span class="mono">tokenURI</span> tells apps where to find its name, image and traits. Change owner on-chain and ownership genuinely transfers — no company needed.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STORAGE -->
+<section id="storage">
+  <div class="wrap">
+    <div class="sechead">
+      <div class="num">03 / The catch nobody mentions</div>
+      <h2>Where does the art actually live?</h2>
+      <p>Here's the part that trips people up: the image usually <b>isn't</b> on the blockchain — it's too expensive to store there. The token holds a <i>link</i>. Where that link points decides whether your NFT lasts forever or vanishes when a server goes offline. Toggle between the three approaches.</p>
+    </div>
+    <div class="card storagepanel">
+      <div class="segbar" id="storageSeg">
+        <button data-mode="onchain" class="on">On-chain</button>
+        <button data-mode="ipfs">IPFS / Arweave</button>
+        <button data-mode="url">Centralized URL</button>
+      </div>
+      <div class="grid g2" style="align-items:start">
+        <div>
+          <h3 id="storeTitle" style="font-size:20px;margin-bottom:8px">Fully on-chain</h3>
+          <p id="storeDesc" style="color:#33404f;margin:0 0 14px"></p>
+          <div class="cap">Durability</div>
+          <div class="durability"><div class="dbar"><span id="durBar" style="width:100%;background:var(--valid)"></span></div><span class="mono" id="durLabel" style="font-size:13px;font-weight:600">Permanent</span></div>
+          <p class="note" id="storeExample"></p>
+        </div>
+        <div>
+          <div class="cap">If the storage layer disappears…</div>
+          <div class="imgstate ok" id="imgState">🖼 Image loads fine</div>
+          <button class="btn ghost sm" id="killServer" style="margin-top:12px">Simulate storage going offline</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MINTING -->
+<section id="mint" class="dark">
+  <div class="wrap">
+    <div class="sechead">
+      <div class="num" style="color:#B79BFF">04 / Bringing it to life</div>
+      <h2>Minting: how a token is born</h2>
+      <p>"Minting" is the moment a smart contract writes your token onto the blockchain for the first time, assigning it an ID and an owner. It costs a network fee ("gas"). After that, it can be transferred and traded forever.</p>
+    </div>
+    <div class="grid g4">
+      <div class="card concept" style="background:#161d2e;border-color:#2a3550"><div class="ic">1</div><h4 style="color:#fff">Create &amp; upload</h4><p style="color:#a9b4cc">Make the asset and put it somewhere durable (ideally IPFS/Arweave), plus a metadata file.</p></div>
+      <div class="card concept" style="background:#161d2e;border-color:#2a3550"><div class="ic">2</div><h4 style="color:#fff">Deploy / call contract</h4><p style="color:#a9b4cc">A smart contract mints the token, recording its ID and pointing tokenURI at the metadata.</p></div>
+      <div class="card concept" style="background:#161d2e;border-color:#2a3550"><div class="ic">3</div><h4 style="color:#fff">Pay gas</h4><p style="color:#a9b4cc">You pay a network fee to the validators who write the transaction into a block.</p></div>
+      <div class="card concept" style="background:#161d2e;border-color:#2a3550"><div class="ic">4</div><h4 style="color:#fff">You own token #N</h4><p style="color:#a9b4cc">The blockchain now records you as the owner. It's yours to hold, sell or transfer.</p></div>
+    </div>
+    <p class="note" style="color:#8593AC">Tip: "lazy minting" defers the on-chain write (and the gas) until the first sale, so creators can list for free — the buyer pays gas at purchase.</p>
+  </div>
+</section>
+
+<!-- STANDARDS -->
+<section id="standards">
+  <div class="wrap">
+    <div class="sechead">
+      <div class="num">05 / The rulebooks</div>
+      <h2>Token standards</h2>
+      <p>A "standard" is a shared blueprint so that every wallet and marketplace can understand your token. On Ethereum, two dominate. (Other chains have their own — Solana's Metaplex, Bitcoin's Ordinals.)</p>
+    </div>
+    <div class="cmp">
+      <div class="card col" style="border-top:4px solid var(--rare)">
+        <div class="tag">the original · finalized 2018</div>
+        <h3>ERC-721</h3>
+        <p style="color:#33404f;font-size:14.5px">One token, one owner, fully unique. The standard behind CryptoPunks, Bored Apes and most 1-of-1 art.</p>
+        <div class="kv"><b>Each token</b><span>Completely unique</span></div>
+        <div class="kv"><b>Tracks</b><span>"Alice owns #42"</span></div>
+        <div class="kv"><b>Best for</b><span>Art, PFPs, collectibles</span></div>
+        <div class="kv"><b>Authors</b><span>Entriken, Shirley, Evans, Sachs</span></div>
+      </div>
+      <div class="card col" style="border-top:4px solid var(--cobalt)">
+        <div class="tag">the multi-token · 2019</div>
+        <h3>ERC-1155</h3>
+        <p style="color:#33404f;font-size:14.5px">One contract can hold many token types — both fungible and non-fungible. Built for games and large collections.</p>
+        <div class="kv"><b>Each token</b><span>Unique OR in editions</span></div>
+        <div class="kv"><b>Tracks</b><span>"Alice owns 50 of #3"</span></div>
+        <div class="kv"><b>Best for</b><span>Games, tickets, editions</span></div>
+        <div class="kv"><b>Superpower</b><span>Batch, cheaper minting</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARKETS -->
+<section id="markets">
+  <div class="wrap">
+    <div class="sechead">
+      <div class="num">06 / Where they trade</div>
+      <h2>Marketplaces &amp; the royalty story</h2>
+      <p>Marketplaces are the storefronts. They differ by chain, audience and — controversially — how they treat <b>creator royalties</b> (a cut the artist earns on every resale). Once optional-by-default, royalties are now a genuine debate; on-chain enforcement (via tools like Manifold) is the workaround.</p>
+    </div>
+    <div class="card" style="padding:8px 22px;overflow-x:auto">
+      <table class="mkt">
+        <thead><tr><th>Marketplace</th><th>Best for</th><th>Main chains</th><th>Fee</th><th>Royalties</th></tr></thead>
+        <tbody>
+          <tr><td>OpenSea</td><td>Beginners, broadest catalog</td><td><span class="chainpill">Ethereum</span> <span class="chainpill">Base</span> <span class="chainpill">Polygon</span></td><td>~0.5%</td><td>Optional</td></tr>
+          <tr><td>Blur</td><td>Pro / high-volume traders</td><td><span class="chainpill">Ethereum</span></td><td>0%</td><td>0.5% min</td></tr>
+          <tr><td>Magic Eden</td><td>Solana collections</td><td><span class="chainpill">Solana</span></td><td>~2%</td><td>Optional</td></tr>
+          <tr><td>Tensor</td><td>Solana pro traders</td><td><span class="chainpill">Solana</span></td><td>Low</td><td>Optional</td></tr>
+          <tr><td>SuperRare</td><td>Curated 1-of-1 fine art</td><td><span class="chainpill">Ethereum</span></td><td>~15% (primary)</td><td>Enforced</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Landscape as of mid-2026: fees and royalty policies change often, and Magic Eden refocused on Solana in early 2026 (winding down its Bitcoin Ordinals and EVM marketplaces). Always check a marketplace's current terms and verify the URL before connecting a wallet.</p>
+  </div>
+</section>
+
+<!-- USES -->
+<section id="uses" class="dark">
+  <div class="wrap">
+    <div class="sechead">
+      <div class="num" style="color:#B79BFF">07 / Beyond the JPEG</div>
+      <h2>What NFTs are actually used for</h2>
+      <p>Profile pictures made NFTs famous, but "a unique, ownable, programmable token" turns out to be useful for a lot more than art.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card concept" style="background:#161d2e;border-color:#2a3550"><div class="ic">◈</div><h4 style="color:#fff">Art &amp; PFPs</h4><p style="color:#a9b4cc">1-of-1 artwork and generative collections like CryptoPunks — identity and status in one token.</p></div>
+      <div class="card concept" style="background:#161d2e;border-color:#2a3550"><div class="ic">▶</div><h4 style="color:#fff">Game items</h4><p style="color:#a9b4cc">Weapons, skins and land you truly own and can carry between games or sell freely.</p></div>
+      <div class="card concept" style="background:#161d2e;border-color:#2a3550"><div class="ic">🎟</div><h4 style="color:#fff">Tickets &amp; access</h4><p style="color:#a9b4cc">Event tickets and "token-gated" memberships — hold the token, unlock the door.</p></div>
+      <div class="card concept" style="background:#161d2e;border-color:#2a3550"><div class="ic">🌐</div><h4 style="color:#fff">Domains &amp; identity</h4><p style="color:#a9b4cc">Names like <span class="mono">alice.eth</span> are NFTs — a human-readable, ownable web3 identity.</p></div>
+      <div class="card concept" style="background:#161d2e;border-color:#2a3550"><div class="ic">♪</div><h4 style="color:#fff">Music &amp; media</h4><p style="color:#a9b4cc">Musicians sell releases and royalties directly to fans, skipping the middlemen.</p></div>
+      <div class="card concept" style="background:#161d2e;border-color:#2a3550"><div class="ic">🏠</div><h4 style="color:#fff">Real-world assets</h4><p style="color:#a9b4cc">Deeds, certificates and tokenized property — early, but a fast-growing frontier.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section id="history">
+  <div class="wrap">
+    <div class="sechead">
+      <div class="num">08 / How we got here</div>
+      <h2>A short history of NFTs</h2>
+      <p>From an obscure experiment to a $17-billion frenzy and back to something quieter and more useful.</p>
+    </div>
+    <div class="grid g2">
+      <div class="card" style="padding:22px">
+        <div class="tl">
+          <div class="ev"><div class="d">2012–2014</div><div class="t">Colored Coins &amp; "Quantum"</div><div class="x">Early experiments tag assets on Bitcoin; Kevin McCoy mints "Quantum" (2014), often called the first NFT.</div></div>
+          <div class="ev"><div class="d">JUN 2017</div><div class="t">CryptoPunks</div><div class="x">Larva Labs releases 10,000 unique pixel characters — free to claim. The first PFP collection.</div></div>
+          <div class="ev"><div class="d">NOV 2017</div><div class="t">CryptoKitties &amp; ERC-721</div><div class="x">Dapper Labs' breedable cats clog Ethereum and inspire the ERC-721 standard. The term "NFT" is coined.</div></div>
+        </div>
+      </div>
+      <div class="card" style="padding:22px">
+        <div class="tl">
+          <div class="ev"><div class="d">MAR 2021</div><div class="t">Beeple at Christie's</div><div class="x">"Everydays: The First 5000 Days" sells for $69.3M — NFTs hit global headlines overnight.</div></div>
+          <div class="ev"><div class="d">APR 2021</div><div class="t">Bored Ape Yacht Club</div><div class="x">Yuga Labs' apes turn PFPs into celebrity-backed culture. Trading explodes from $82M (2020) to $17B (2021).</div></div>
+          <div class="ev"><div class="d">2022</div><div class="t">The crash</div><div class="x">The bubble bursts; monthly sales fall 90%+ from the peak. Speculation cools, builders stay.</div></div>
+          <div class="ev"><div class="d">2025–2026</div><div class="t">Into the museums</div><div class="x">CryptoPunks IP moves to a nonprofit; MoMA adds Punks to its permanent collection. Focus shifts to utility.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RISKS -->
+<section id="risks">
+  <div class="wrap">
+    <div class="sechead">
+      <div class="num">09 / Read this before you buy</div>
+      <h2>Myths, risks &amp; scams</h2>
+      <p>NFTs are a real technology wrapped in a lot of noise. Knowing what's true — and what's dangerous — is the difference between a fun hobby and an expensive lesson.</p>
+    </div>
+    <div class="grid g3">
+      <div class="card myth debunk"><div class="tagline">Myth</div><h4>"Right-click save = I own it now"</h4><p>You copied the <i>image</i>, not the <b>token</b>. Ownership is the on-chain record, which your copy doesn't have. (Whether that record is worth anything is a separate question.)</p></div>
+      <div class="card myth debunk"><div class="tagline">Myth</div><h4>"The blockchain stores my art forever"</h4><p>Only if the metadata and image are on-chain or on IPFS/Arweave. If they sit on a company's server, they can vanish — the token would point to nothing.</p></div>
+      <div class="card myth truth"><div class="tagline">True risk</div><h4>Wallet-drainer scams</h4><p>Fake mint sites and malicious "sign this" prompts can empty your wallet in one click. Verify URLs, never share your seed phrase, and be skeptical of free airdrops.</p></div>
+      <div class="card myth truth"><div class="tagline">True risk</div><h4>Rug pulls</h4><p>A team hypes a collection, sells out the mint, then abandons it. Research the creators and treat anonymous "guaranteed returns" as a red flag.</p></div>
+      <div class="card myth truth"><div class="tagline">True risk</div><h4>Wash trading &amp; fake volume</h4><p>Bad actors trade with themselves to fake demand and inflate "floor prices." High volume isn't the same as real interest.</p></div>
+      <div class="card myth truth"><div class="tagline">True risk</div><h4>Brutal illiquidity</h4><p>Prices are volatile and buyers can vanish. Many collections lost 80–95% of value. Never spend more than you can afford to lose.</p></div>
+    </div>
+    <p class="note">This is education, not financial advice. NFTs can go to zero; treat any purchase as discretionary spending, not an investment strategy.</p>
+  </div>
+</section>
+
+<!-- LIVE -->
+<section id="live" class="dark">
+  <div class="wrap">
+    <div class="sechead">
+      <div class="num" style="color:#B79BFF">10 / Right now</div>
+      <h2>Live prices &amp; a quick converter</h2>
+      <p>Most NFTs are priced in ETH, so the dollar value moves with the market. Here's the live rate pulled when your browser loads, plus a converter to translate any "floor price" into real money.</p>
+    </div>
+    <div class="grid g4">
+      <div class="card stat" style="background:#161d2e;border-color:#2a3550"><div class="k">Ethereum price</div><div class="v" id="s-eth" style="color:#B79BFF">…</div><div class="s" id="s-eth-badge"></div></div>
+      <div class="card stat" style="background:#161d2e;border-color:#2a3550"><div class="k">Bitcoin price</div><div class="v" id="s-btc" style="color:var(--gold)">…</div><div class="s" id="s-btc-badge"></div></div>
+      <div class="card stat" style="background:#161d2e;border-color:#2a3550;grid-column:span 2">
+        <div class="k">NFT price converter</div>
+        <div class="conv">
+          <div style="flex:1;min-width:120px"><label class="fld" style="color:#8593AC" for="ethIn">Price in ETH</label><input type="number" id="ethIn" value="1.5" step="0.1" style="background:#0e1524;color:#e7ecf7;border-color:#2a3550"></div>
+          <div style="font-family:'Archivo';font-weight:900;font-size:22px;padding-bottom:6px">=</div>
+          <div style="flex:1;min-width:120px"><label class="fld" style="color:#8593AC">In US dollars</label><div class="v" id="usdOut" style="color:#fff;font-size:24px">…</div></div>
+        </div>
+      </div>
+    </div>
+    <p class="note" style="color:#8593AC">Prices via CoinGecko's public API. If a value shows "estimate," the live call was blocked or rate-limited and a recent reference figure is shown. Nothing here is financial advice.</p>
+  </div>
+</section>
+
+<!-- TUTOR -->
+<section id="tutor">
+  <div class="wrap">
+    <div class="sechead">
+      <div class="num">11 / Ask anything</div>
+      <h2>Your AI NFT tutor</h2>
+      <p>Still fuzzy on something — gas, royalties, how to spot a scam? Ask in plain English. Powered by Claude and briefed to stay accurate, beginner-friendly, and honest about risk.</p>
+    </div>
+    <div class="card tutor">
+      <div class="chips" id="tutorChips">
+        <button class="chip" data-q="Explain what a 'floor price' is like I'm new to this.">What's a floor price?</button>
+        <button class="chip" data-q="If I can screenshot an NFT, why would anyone pay for it?">Why pay if I can screenshot it?</button>
+        <button class="chip" data-q="How do I avoid NFT scams as a beginner? Give me a checklist.">How do I avoid scams?</button>
+        <button class="chip" data-q="What's the difference between minting and buying an NFT?">Minting vs buying?</button>
+        <button class="chip" data-q="Do NFTs hurt the environment? Give me the honest answer.">Are NFTs bad for the planet?</button>
+      </div>
+      <div class="chatbox" id="chatbox" aria-live="polite">
+        <div class="msg a">Hey! I'm your NFT tutor. Ask me anything — how minting works, what "gas" is, whether a collection looks legit, how to keep your wallet safe. Tap a suggestion above or type below. 👇</div>
+      </div>
+      <div class="inputrow">
+        <input type="text" id="tutorInput" placeholder="Ask an NFT question…" autocomplete="off">
+        <button class="btn rare" id="tutorSend">Send</button>
+      </div>
+      <p class="note">In the Claude app this is the full Claude model. Opened as a downloaded file, it answers common questions from a built-in bank. Concepts only — no investment or trading advice.</p>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section id="quiz">
+  <div class="wrap">
+    <div class="sechead">
+      <div class="num">12 / Check yourself</div>
+      <h2>Quick quiz</h2>
+      <p>Eight questions to see what stuck. Pick an answer to reveal whether it's right and why.</p>
+    </div>
+    <div class="card quiz" id="quizCard"></div>
+  </div>
+</section>
+
+<!-- GLOSSARY -->
+<section id="glossary">
+  <div class="wrap">
+    <div class="sechead">
+      <div class="num">13 / The jargon, decoded</div>
+      <h2>Glossary</h2>
+      <p>The words you'll see everywhere in NFT-land, in plain language.</p>
+    </div>
+    <div class="grid g2">
+      <div class="card" style="padding:6px 20px" id="glossaryA"></div>
+      <div class="card" style="padding:6px 20px" id="glossaryB"></div>
+    </div>
+  </div>
+</section>
+
+<!-- RESOURCES -->
+<section id="resources">
+  <div class="wrap">
+    <div class="sechead">
+      <div class="num">14 / Go deeper</div>
+      <h2>Trusted resources</h2>
+      <p>Primary sources and solid explainers to keep learning.</p>
+    </div>
+    <div class="grid g3">
+      <a class="card res" href="https://ethereum.org/en/nft/" target="_blank" rel="noopener"><div><div class="rn">DOCS</div><h4>ethereum.org · NFTs →</h4><p>The official, beginner-friendly primer on how NFTs work.</p></div></a>
+      <a class="card res" href="https://eips.ethereum.org/EIPS/eip-721" target="_blank" rel="noopener"><div><div class="rn">STANDARD</div><h4>EIP-721 spec →</h4><p>The actual ERC-721 standard document that defines NFTs.</p></div></a>
+      <a class="card res" href="https://eips.ethereum.org/EIPS/eip-1155" target="_blank" rel="noopener"><div><div class="rn">STANDARD</div><h4>EIP-1155 spec →</h4><p>The multi-token standard for games and editions.</p></div></a>
+      <a class="card res" href="https://opensea.io/" target="_blank" rel="noopener"><div><div class="rn">MARKET</div><h4>OpenSea →</h4><p>Browse real collections and see live floor prices and traits.</p></div></a>
+      <a class="card res" href="https://docs.ipfs.tech/concepts/what-is-ipfs/" target="_blank" rel="noopener"><div><div class="rn">STORAGE</div><h4>What is IPFS? →</h4><p>How decentralized storage keeps NFT media alive.</p></div></a>
+      <a class="card res" href="https://en.wikipedia.org/wiki/Non-fungible_token" target="_blank" rel="noopener"><div><div class="rn">OVERVIEW</div><h4>Wikipedia · NFT →</h4><p>A well-sourced, neutral overview of the whole space.</p></div></a>
+      <a class="card res" href="https://etherscan.io/" target="_blank" rel="noopener"><div><div class="rn">EXPLORER</div><h4>Etherscan →</h4><p>Inspect any NFT contract, token ID, owner and transfer history.</p></div></a>
+      <a class="card res" href="https://www.larvalabs.com/cryptopunks" target="_blank" rel="noopener"><div><div class="rn">CULTURE</div><h4>CryptoPunks →</h4><p>The collection that started PFPs — browse all 10,000 traits.</p></div></a>
+      <a class="card res" href="https://revoke.cash/" target="_blank" rel="noopener"><div><div class="rn">SAFETY</div><h4>Revoke.cash →</h4><p>Review and revoke risky wallet permissions — good scam hygiene.</p></div></a>
+    </div>
+    <div class="crosslink" style="margin-top:20px">
+      <div><h4>New to blockchains themselves?</h4><p>NFTs sit on top of blockchain technology. If the base layer is fuzzy, start with the companion Blockchain 101 page.</p></div>
+      <span class="cap" style="color:#7f8ba1">← pairs with Blockchain 101</span>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="brand" style="justify-content:center;margin-bottom:10px"><span class="cube"></span> NFTs&nbsp;101</div>
+    <p>Every avatar on this page is generated live from a real SHA-256 seed with weighted trait rarity — deterministic, so the same token ID always produces the same art. Educational content only — not financial advice.<br>Facts verified against primary sources as of mid-2026; the NFT market moves fast, so check the linked marketplaces and explorers for live truth.</p>
+    <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--line);display:inline-block">
+      <span class="mono" style="font-size:13px;color:var(--ink)">Built by <b>Lu</b></span>
+      <span class="cap" style="margin-left:10px">© 2026 · All rights reserved</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ===== SHA-256 (verified against NIST vectors) ===== */
+function sha256(ascii){
+  function rr(v,a){return (v>>>a)|(v<<(32-a));}
+  var mp=Math.pow,mw=mp(2,32),res='',words=[],abl=ascii.length*8;
+  var hash=sha256.h=sha256.h||[],k=sha256.k=sha256.k||[],pc=k.length,ic={};
+  for(var cand=2;pc<64;cand++){if(!ic[cand]){for(var i=0;i<313;i+=cand){ic[i]=cand;}
+    hash[pc]=(mp(cand,.5)*mw)|0;k[pc++]=(mp(cand,1/3)*mw)|0;}}
+  ascii+='\x80';while(ascii.length%64-56)ascii+='\x00';
+  for(var i=0;i<ascii.length;i++){var j=ascii.charCodeAt(i);if(j>>8)return;words[i>>2]|=j<<((3-i)%4)*8;}
+  words[words.length]=((abl/mw)|0);words[words.length]=(abl);
+  for(var j=0;j<words.length;){var w=words.slice(j,j+=16),oh=hash;hash=hash.slice(0,8);
+    for(var i=0;i<64;i++){var w15=w[i-15],w2=w[i-2],a=hash[0],e=hash[4];
+      var t1=hash[7]+(rr(e,6)^rr(e,11)^rr(e,25))+((e&hash[5])^((~e)&hash[6]))+k[i]
+        +(w[i]=i<16?w[i]:(w[i-16]+(rr(w15,7)^rr(w15,18)^(w15>>>3))+w[i-7]+(rr(w2,17)^rr(w2,19)^(w2>>>10)))|0);
+      var t2=(rr(a,2)^rr(a,13)^rr(a,22))+((a&hash[1])^(a&hash[2])^(hash[1]&hash[2]));
+      hash=[(t1+t2)|0].concat(hash);hash[4]=(hash[4]+t1)|0;}
+    for(var i=0;i<8;i++){hash[i]=(hash[i]+oh[i])|0;}}
+  for(var i=0;i<8;i++){for(var j=3;j+1;j--){var b=(hash[i]>>(j*8))&255;res+=((b<16)?0:'')+b.toString(16);}}
+  return res;
+}
+function H(str){return sha256(unescape(encodeURIComponent(String(str))));}
+// deterministic 0..1 stream from a hex hash, consuming 2 hex chars (1 byte) per draw
+function rngFromHash(hex){var i=0;return function(){var b=parseInt(hex.substr(i%64,2),16);i+=2;return b/256;};}
+
+/* ===== GENERATIVE AVATAR SYSTEM ===== */
+var TIER_COLORS={Common:'var(--t-common)',Uncommon:'var(--t-uncommon)',Rare:'var(--t-rare)',Epic:'var(--t-epic)',Legendary:'var(--t-legendary)'};
+var TIER_RANK={Common:0,Uncommon:1,Rare:2,Epic:3,Legendary:4};
+function tierFromWeight(w){return w>=25?'Common':w>=12?'Uncommon':w>=6?'Rare':w>=2?'Epic':'Legendary';}
+// trait pools: {name, weight, ...draw data}. weight ~ relative %.
+var POOLS={
+  type:[
+    {name:'Human',weight:62,skin:'#e8b98f'},
+    {name:'Ape',weight:14,skin:'#6b4a2f'},
+    {name:'Robot',weight:12,skin:'#b8c0cc'},
+    {name:'Zombie',weight:8,skin:'#7fb069'},
+    {name:'Alien',weight:2,skin:'#7fd4e8'},
+    {name:'Gold',weight:1,skin:'#f2c14e'}
+  ],
+  bg:[
+    {name:'Slate',weight:28,c:'#c9d3e0'},{name:'Mint',weight:18,c:'#c7ecd8'},
+    {name:'Peach',weight:15,c:'#f7d9c4'},{name:'Sky',weight:13,c:'#c4ddf7'},
+    {name:'Lilac',weight:10,c:'#e2d0f5'},{name:'Sand',weight:8,c:'#eee2c0'},
+    {name:'Rose',weight:5,c:'#f5c9d6'},{name:'Void',weight:3,c:'#2a2440'}
+  ],
+  eyes:[
+    {name:'Round',weight:34},{name:'Square',weight:24},{name:'Sleepy',weight:18},
+    {name:'Wink',weight:12},{name:'Visor',weight:8},{name:'Laser',weight:4}
+  ],
+  mouth:[
+    {name:'Smile',weight:32},{name:'Flat',weight:26},{name:'Grin',weight:20},
+    {name:'Oh',weight:14},{name:'Cigar',weight:6},{name:'Gold Grill',weight:2}
+  ],
+  hat:[
+    {name:'None',weight:28},{name:'Beanie',weight:18},{name:'Cap',weight:16},
+    {name:'Mohawk',weight:12},{name:'Cowboy',weight:9},{name:'Headphones',weight:8},
+    {name:'Crown',weight:5},{name:'Halo',weight:3},{name:'Horns',weight:1}
+  ],
+  eyewear:[
+    {name:'None',weight:54},{name:'Glasses',weight:18},{name:'Shades',weight:14},
+    {name:'3D',weight:8},{name:'Eyepatch',weight:4},{name:'VR',weight:2}
+  ]
+};
+function totalW(pool){return pool.reduce(function(s,o){return s+o.weight;},0);}
+function pick(pool,r){var t=totalW(pool),x=r*t,acc=0;for(var i=0;i<pool.length;i++){acc+=pool[i].weight;if(x<acc)return pool[i];}return pool[pool.length-1];}
+function pct(o,pool){return (o.weight/totalW(pool)*100);}
+
+function traitsForId(id){
+  var hex=H('pixel-punks-v1-'+id);
+  var rnd=rngFromHash(hex);
+  var t={};
+  t.type=pick(POOLS.type,rnd()); t.bg=pick(POOLS.bg,rnd());
+  t.eyes=pick(POOLS.eyes,rnd()); t.mouth=pick(POOLS.mouth,rnd());
+  t.hat=pick(POOLS.hat,rnd()); t.eyewear=pick(POOLS.eyewear,rnd());
+  // overall tier = rarest present
+  var entries=[['Type',t.type,POOLS.type],['Background',t.bg,POOLS.bg],['Eyes',t.eyes,POOLS.eyes],['Mouth',t.mouth,POOLS.mouth],['Headwear',t.hat,POOLS.hat],['Eyewear',t.eyewear,POOLS.eyewear]];
+  var tier='Common';
+  entries.forEach(function(e){var ti=tierFromWeight(pct(e[1],e[2]));if(TIER_RANK[ti]>TIER_RANK[tier])tier=ti;});
+  return {t:t,tier:tier,entries:entries};
+}
+function px(x,y,w,h,c){return '<rect x="'+x+'" y="'+y+'" width="'+w+'" height="'+h+'" fill="'+c+'"/>';}
+function buildAvatarSVG(id){
+  var d=traitsForId(id),t=d.t;var s='';
+  var skin=t.type.skin, dark='rgba(0,0,0,.18)';
+  s+='<svg viewBox="0 0 240 240" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges">';
+  s+=px(0,0,240,240,t.bg.c);
+  // shoulders
+  s+=px(58,196,124,44,shade(skin,-14));
+  s+=px(70,208,100,32,skin);
+  // head
+  s+=px(64,56,112,132,skin);
+  s+=px(56,88,8,44,skin); // left cheek
+  s+=px(176,88,8,44,skin); // right cheek
+  s+=px(64,56,112,10,shade(skin,10)); // top light
+  // ears
+  s+=px(48,104,16,26,skin);s+=px(176,104,16,26,skin);
+  // eyewear background handled after eyes
+  // EYES
+  var ey=t.eyes.name;
+  function eyeBase(){s+=px(84,104,24,20,'#fff');s+=px(140,104,24,20,'#fff');}
+  if(ey==='Round'){eyeBase();s+=px(92,110,10,10,'#1a1a1a');s+=px(148,110,10,10,'#1a1a1a');}
+  else if(ey==='Square'){eyeBase();s+=px(88,108,14,14,'#1a1a1a');s+=px(144,108,14,14,'#1a1a1a');}
+  else if(ey==='Sleepy'){s+=px(84,114,24,8,'#1a1a1a');s+=px(140,114,24,8,'#1a1a1a');}
+  else if(ey==='Wink'){eyeBase();s+=px(92,110,10,10,'#1a1a1a');s+=px(140,116,24,6,'#1a1a1a');}
+  else if(ey==='Visor'){s+=px(80,104,88,20,'#20304d');s+=px(84,110,80,4,'#6fd1ff');}
+  else if(ey==='Laser'){eyeBase();s+=px(90,108,12,12,'#e03a3a');s+=px(146,108,12,12,'#e03a3a');s+=px(102,112,138,4,'rgba(224,58,58,.55)');}
+  // EYEWEAR overlay
+  var ew=t.eyewear.name;
+  if(ew==='Glasses'){s+=px(80,102,32,24,'none');s+='<rect x="80" y="102" width="32" height="24" fill="none" stroke="#1a1a1a" stroke-width="4"/><rect x="136" y="102" width="32" height="24" fill="none" stroke="#1a1a1a" stroke-width="4"/>'+px(112,110,24,4,'#1a1a1a');}
+  else if(ew==='Shades'){s+=px(78,102,36,22,'#111');s+=px(134,102,36,22,'#111');s+=px(114,110,20,4,'#111');}
+  else if(ew==='3D'){s+=px(78,102,36,22,'rgba(224,58,58,.75)');s+=px(134,102,36,22,'rgba(35,64,255,.75)');s+=px(114,110,20,4,'#111');}
+  else if(ew==='Eyepatch'){s+=px(136,98,34,30,'#111');s+=px(60,110,120,4,'#111');}
+  else if(ew==='VR'){s+=px(72,98,104,34,'#20304d');s+=px(72,98,104,6,'#3a4c73');s+=px(120,132,8,10,'#20304d');}
+  // MOUTH
+  var mo=t.mouth.name;
+  if(mo==='Smile'){s+=px(96,158,48,8,'#7a3b2e');s+=px(88,150,8,8,'#7a3b2e');s+=px(144,150,8,8,'#7a3b2e');}
+  else if(mo==='Flat'){s+=px(96,158,48,6,'#7a3b2e');}
+  else if(mo==='Grin'){s+=px(92,152,56,16,'#7a3b2e');s+=px(96,156,48,6,'#fff');}
+  else if(mo==='Oh'){s+=px(108,152,24,20,'#7a3b2e');s+=px(112,156,16,12,'#3a1f18');}
+  else if(mo==='Cigar'){s+=px(96,158,48,6,'#7a3b2e');s+=px(140,156,44,10,'#6b4423');s+=px(184,156,8,10,'#e8863b');}
+  else if(mo==='Gold Grill'){s+=px(96,156,48,14,'#f2c14e');s+='<rect x="96" y="156" width="48" height="14" fill="none" stroke="#b9880c" stroke-width="1"/>';}
+  // HEADWEAR
+  var ht=t.hat.name;
+  if(ht==='Beanie'){s+=px(58,44,124,28,'#c0392b');s+=px(58,64,124,8,'#a03024');}
+  else if(ht==='Cap'){s+=px(58,46,124,24,'#2340ff');s+=px(150,66,60,10,'#1a30c0');}
+  else if(ht==='Mohawk'){for(var i=0;i<7;i++){s+=px(104+i*6-18,20+((i%2)*0),12,44,'#7a2fe0');}s+=px(96,44,48,20,'#7a2fe0');}
+  else if(ht==='Cowboy'){s+=px(44,58,152,12,'#6b4423');s+=px(72,34,96,30,'#7a4d1a');}
+  else if(ht==='Headphones'){s+=px(52,72,12,44,'#222');s+=px(176,72,12,44,'#222');s+=px(56,40,128,14,'#222');}
+  else if(ht==='Crown'){s+=px(66,32,108,20,'#f2c14e');s+=px(66,20,12,16,'#f2c14e');s+=px(114,16,12,20,'#f2c14e');s+=px(162,20,12,16,'#f2c14e');s+=px(112,36,8,8,'#e03a3a');}
+  else if(ht==='Halo'){s+='<ellipse cx="120" cy="34" rx="52" ry="12" fill="none" stroke="#f2c14e" stroke-width="7"/>';}
+  else if(ht==='Horns'){s+=px(60,34,14,26,'#b33');s+=px(166,34,14,26,'#b33');s+=px(56,28,10,10,'#b33');s+=px(174,28,10,10,'#b33');}
+  s+='</svg>';
+  return s;
+}
+function shade(hex,amt){
+  if(hex.indexOf('#')!==0)return hex;
+  var n=parseInt(hex.slice(1),16),r=(n>>16)+amt,g=((n>>8)&255)+amt,b=(n&255)+amt;
+  r=Math.max(0,Math.min(255,r));g=Math.max(0,Math.min(255,g));b=Math.max(0,Math.min(255,b));
+  return '#'+(0x1000000+(r<<16)+(g<<8)+b).toString(16).slice(1);
+}
+
+/* ===== MINTER UI ===== */
+(function(){
+  var COLLECTION=10000;
+  var holder=document.getElementById('avatarHolder'),tierBadge=document.getElementById('tierBadge'),
+      tokenId=document.getElementById('tokenId'),traitList=document.getElementById('traitList'),
+      gallery=document.getElementById('gallery'),mintBtn=document.getElementById('mintBtn');
+  var minted=[]; var current=null;
+  var CONTRACT='0x'+H('pixelpunks-contract').slice(0,40);
+  function fakeAddr(seed){return '0x'+H('owner-'+seed).slice(0,40);}
+  function render(id){
+    current=id;
+    var d=traitsForId(id);
+    holder.innerHTML=buildAvatarSVG(id);
+    tierBadge.textContent=d.tier;tierBadge.style.background=TIER_COLORS[d.tier];
+    tokenId.textContent='Pixel Punks #'+String(id).padStart(4,'0');
+    traitList.innerHTML='';
+    d.entries.forEach(function(e){
+      var p=pct(e[1],e[2]);var ti=tierFromWeight(p);
+      var el=document.createElement('div');el.className='trait';
+      el.innerHTML='<div class="k">'+e[0]+'</div><div class="v"><span>'+e[1].name+'</span>'+
+        '<span class="pct" style="background:'+TIER_COLORS[ti]+'">'+p.toFixed(p<1?1:0)+'%</span></div>';
+      traitList.appendChild(el);
+    });
+    updateInspector(id,d);
+  }
+  function addToGallery(id){
+    if(minted.indexOf(id)===-1)minted.unshift(id);
+    minted=minted.slice(0,8);
+    gallery.innerHTML='';
+    minted.forEach(function(mid){
+      var th=document.createElement('div');th.className='th';th.title='#'+mid;
+      th.innerHTML=buildAvatarSVG(mid);
+      th.addEventListener('click',function(){render(mid);});
+      gallery.appendChild(th);
+    });
+  }
+  function updateInspector(id,d){
+    document.getElementById('inspContract').textContent=CONTRACT.slice(0,10)+'…'+CONTRACT.slice(-6);
+    document.getElementById('inspId').textContent=id;
+    document.getElementById('inspOwner').textContent=fakeAddr(id).slice(0,10)+'…'+fakeAddr(id).slice(-6)+' (you)';
+    var uri='ipfs://bafybe'+H('uri-'+id).slice(0,20)+'/'+id+'.json';
+    document.getElementById('inspUri').textContent=uri;
+    var attrs=d.entries.map(function(e){return '    {"trait_type":"'+e[0]+'","value":"'+e[1].name+'"}';}).join(',\n');
+    var json='{\n  <span class="key">"name"</span>: <span class="str">"Pixel Punks #'+String(id).padStart(4,'0')+'"</span>,\n'+
+      '  <span class="key">"image"</span>: <span class="str">"ipfs://bafk'+H('img-'+id).slice(0,16)+'"</span>,\n'+
+      '  <span class="key">"attributes"</span>: [\n'+attrs.replace(/"trait_type"/g,'<span class="key">"trait_type"</span>').replace(/"value"/g,'<span class="key">"value"</span>')+'\n  ]\n}';
+    document.getElementById('metaJson').innerHTML=json;
+  }
+  function mint(){
+    var id=Math.floor(Math.random()*COLLECTION)+1;
+    render(id);addToGallery(id);
+  }
+  mintBtn.addEventListener('click',mint);
+  document.getElementById('inspectJump').addEventListener('click',function(){document.getElementById('inside').scrollIntoView({behavior:'smooth'});});
+  // initial
+  var first=Math.floor(Math.random()*COLLECTION)+1;render(first);addToGallery(first);
+  window.__renderToken=render; // for fungibility demo reuse
+})();
+
+/* ===== FUNGIBILITY DEMO ===== */
+(function(){
+  var pairHolder=document.getElementById('nftPairHolder');
+  var idA=Math.floor(Math.random()*10000)+1, idB=Math.floor(Math.random()*10000)+1;
+  if(idB===idA)idB=idA+1;
+  function drawPair(){
+    pairHolder.innerHTML=
+      '<div class="token-item"><div style="width:74px;height:74px;border-radius:8px;overflow:hidden;border:2px solid var(--line-strong)">'+buildAvatarSVG(idA)+'</div><span class="cap">#'+idA+'</span></div>'+
+      '<div class="token-item"><div style="width:74px;height:74px;border-radius:8px;overflow:hidden;border:2px solid var(--line-strong)">'+buildAvatarSVG(idB)+'</div><span class="cap">#'+idB+'</span></div>';
+  }
+  drawPair();
+  var swapped=false;
+  document.getElementById('swapFung').addEventListener('click',function(){
+    document.getElementById('fungVerdict').textContent='…swapped. Can you even tell? Nothing changed — that\'s fungible.';
+    document.getElementById('fungVerdict').style.color='var(--gold)';
+  });
+  document.getElementById('swapNonFung').addEventListener('click',function(){
+    var t=idA;idA=idB;idB=t;drawPair();swapped=!swapped;
+    document.getElementById('nftVerdict').textContent='Ownership of two distinct items just changed hands. That\'s non-fungible.';
+    document.getElementById('nftVerdict').style.color='var(--rare)';
+  });
+})();
+
+/* ===== STORAGE TOGGLE ===== */
+(function(){
+  var modes={
+    onchain:{title:'Fully on-chain',desc:'The image data itself is stored directly in the smart contract (often as SVG). Nothing external to break — as permanent as the blockchain.',dur:100,durc:'var(--valid)',durl:'Permanent',ex:'Examples: CryptoPunks (image hash on-chain), Chain Runners, on-chain generative art. Most expensive to create.',survives:true},
+    ipfs:{title:'IPFS / Arweave',desc:'The file lives on decentralized storage and is addressed by its content hash, so it can\'t be silently swapped. As long as someone "pins" it, it stays available.',dur:78,durc:'var(--cobalt)',durl:'Durable (if pinned)',ex:'The recommended default for most collections. Arweave adds pay-once, store-forever guarantees.',survives:true},
+    url:{title:'Centralized URL',desc:'The token points to a normal web link like https://mysite.com/1.json. Convenient and cheap — but if that server goes down or the company folds, the link points to nothing.',dur:24,durc:'var(--invalid)',durl:'Fragile',ex:'Common in rushed projects. The token still exists on-chain, but the art it references can 404 forever.',survives:false}
+  };
+  var seg=document.getElementById('storageSeg');
+  var cur='onchain';
+  function apply(m){
+    var d=modes[m];cur=m;
+    document.getElementById('storeTitle').textContent=d.title;
+    document.getElementById('storeDesc').textContent=d.desc;
+    document.getElementById('durBar').style.width=d.dur+'%';
+    document.getElementById('durBar').style.background=d.durc;
+    document.getElementById('durLabel').textContent=d.durl;
+    document.getElementById('storeExample').textContent=d.ex;
+    var img=document.getElementById('imgState');img.className='imgstate ok';img.textContent='🖼 Image loads fine';
+    seg.querySelectorAll('button').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-mode')===m);});
+  }
+  seg.addEventListener('click',function(e){var b=e.target.closest('button');if(b)apply(b.getAttribute('data-mode'));});
+  document.getElementById('killServer').addEventListener('click',function(){
+    var img=document.getElementById('imgState');
+    if(modes[cur].survives){img.className='imgstate ok';img.textContent='✓ Still there — content is decentralized';}
+    else{img.className='imgstate broken';img.textContent='⚠ 404 — image gone, token points to nothing';}
+  });
+  apply('onchain');
+})();
+
+/* ===== LIVE PRICES + CONVERTER ===== */
+(function(){
+  var FALL={eth:2600,btc:64000};
+  var ethPrice=FALL.eth;
+  function fmt(n){return '$'+Math.round(n).toLocaleString();}
+  function badge(id,live){var e=document.getElementById(id);if(e)e.innerHTML=live?'<span class="livebadge"><span class="dot"></span>live</span>':'reference estimate';}
+  function conv(){var v=parseFloat(document.getElementById('ethIn').value)||0;document.getElementById('usdOut').textContent=fmt(v*ethPrice);}
+  document.getElementById('ethIn').addEventListener('input',conv);
+  fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum&vs_currencies=usd')
+    .then(function(r){if(!r.ok)throw 0;return r.json();})
+    .then(function(d){
+      ethPrice=d.ethereum.usd;
+      document.getElementById('s-eth').textContent=fmt(d.ethereum.usd);badge('s-eth-badge',true);
+      document.getElementById('s-btc').textContent=fmt(d.bitcoin.usd);badge('s-btc-badge',true);
+      conv();
+    })
+    .catch(function(){
+      document.getElementById('s-eth').textContent=fmt(FALL.eth);badge('s-eth-badge',false);
+      document.getElementById('s-btc').textContent=fmt(FALL.btc);badge('s-btc-badge',false);
+      conv();
+    });
+  conv();
+})();
+
+/* ===== AI TUTOR (live in-app + offline fallback) ===== */
+(function(){
+  var box=document.getElementById('chatbox'),input=document.getElementById('tutorInput'),send=document.getElementById('tutorSend');
+  var history=[]; var MAX=10;
+  var SYS="You are a warm, accurate NFT tutor for complete beginners. Keep answers short (2-4 short paragraphs max), concrete, jargon-light; define any term you must use. Be precise about how NFTs, token standards (ERC-721, ERC-1155), minting, gas, metadata/IPFS storage, royalties, marketplaces and wallets work. Be honest and balanced about risks, scams, volatility and criticism of NFTs \u2014 never hype. If asked for price predictions, what to buy, or investment/trading advice, gently decline and explain you only teach concepts and that NFTs are high-risk. Never invent statistics; if unsure, say so. No markdown headers; short plain paragraphs only.";
+  var BANK=[
+    {k:["floor"],a:"The floor price is the cheapest an item in a collection is currently listed for \u2014 the lowest entry ticket to own one. People use it as a rough gauge of value, but it can mislead: it only reflects the single cheapest listing, and thin or faked trading can move it. A low floor is not automatically a bargain, and a high floor does not guarantee you can actually sell at that price."},
+    {k:["screenshot","right click","right-click","copy","why pay","why would anyone"],a:"You can copy the image, but you cannot copy the on-chain record of ownership \u2014 that is the part an NFT actually is. It is like photographing a painting: you get a picture, not the original with its provenance. Whether that ownership record is worth anything is a fair separate question: for some it is status, community access, or supporting an artist; for others it is pure speculation."},
+    {k:["scam","safe","avoid","drain","phishing","rug"],a:"A quick safety checklist: never share your seed phrase with anyone or any site; only mint from official links you have bookmarked and double-check the URL; be very suspicious of surprise free airdrops and 'you won' DMs; read what a transaction does before signing, since drainers hide in a bad 'approve'; use a separate low-value wallet for minting; and research the team. If returns are 'guaranteed,' it is a scam."},
+    {k:["mint","minting","buying","buy"],a:"Minting is creating a brand-new token on the blockchain for the first time \u2014 you become its first owner and usually pay a gas fee to write it on-chain. Buying is purchasing an NFT that already exists from its current owner on a marketplace, at whatever price they accept. Minting is the primary sale (often from the creator); buying is the secondary market."},
+    {k:["environment","energy","climate","planet","carbon"],a:"Honest answer: it depends heavily on the chain. The old criticism came from Ethereum's Proof of Work era, when transactions were energy-hungry. Since Ethereum switched to Proof of Stake in 2022, its energy use dropped by roughly 99.9%, so minting there now uses very little. NFTs on Bitcoin (Ordinals) still carry Proof of Work's higher footprint. So 'NFTs kill the planet' is outdated for most of today's activity, but the chain matters."},
+    {k:["what is an nft","what is nft","what are nfts","non-fungible","non fungible"],a:"An NFT (non-fungible token) is a unique, ownable record on a blockchain, usually linked to an image, video, or other item. Non-fungible just means not interchangeable \u2014 unlike a dollar or 1 ETH, each NFT is one of a kind. The blockchain guarantees a single owner and a permanent transfer history; the token itself is just an ID, an owner's address, and a link to its metadata."},
+    {k:["gas","fee"],a:"Gas is the network fee you pay to do something on-chain, like minting or transferring an NFT \u2014 it compensates the validators who process your transaction. It is paid in the chain's coin (ETH on Ethereum) and rises when the network is busy, which is why minting during quiet hours costs less. 'Lazy minting' shifts the gas to the buyer at the first sale so creators can list for free."},
+    {k:["erc","standard","721","1155"],a:"A token standard is a shared blueprint so every wallet and marketplace understands your token. ERC-721 is the classic NFT standard: one unique token, one owner \u2014 used for art and PFPs like CryptoPunks. ERC-1155 is a flexible multi-token standard where one contract holds both unique items and editions, great for games and tickets. Other chains have their own (Solana's Metaplex, Bitcoin Ordinals)."},
+    {k:["ipfs","arweave","storage","stored","where does","where is","metadata"],a:"Usually the image is not on the blockchain \u2014 that is too expensive \u2014 so the token stores a link, and where it points matters a lot. On-chain storage is permanent but costly; IPFS or Arweave is decentralized and durable as long as the file is pinned; a plain company URL is cheap but fragile \u2014 if that server dies, the token points to nothing. Always check where a collection stores its media."},
+    {k:["royalty","royalties"],a:"A royalty is a percentage the original creator earns each time their NFT is resold \u2014 say 5% of every secondary sale. It was a big draw for artists, but most marketplaces now make royalties optional to attract traders, so they are not always paid. Creators who want them guaranteed enforce royalties at the smart-contract level using tools like Manifold."},
+    {k:["wallet","seed phrase","private key","metamask","phantom"],a:"A wallet (like MetaMask or Phantom) holds the keys that prove you own your NFTs and coins \u2014 it does not store the items themselves; the blockchain does. Your public address is safe to share so people can send you things; your secret seed phrase must never be shared or typed into a website. Guard the seed phrase like the master key it is \u2014 there is no reset."}
+  ];
+  var DEFAULT="I can only reach the full AI tutor when this page runs inside the Claude app. In offline mode I answer common questions from a built-in bank \u2014 try a suggestion chip above, or ask about minting, gas, floor price, scams, storage/IPFS, royalties, standards, or wallets. The Glossary and Resources below cover a lot too.";
+  function add(role,text){var d=document.createElement('div');d.className='msg '+(role==='user'?'u':'a');d.textContent=text;box.appendChild(d);box.scrollTop=box.scrollHeight;return d;}
+  function typing(){var d=document.createElement('div');d.className='msg a';d.innerHTML='<span class="typing"><span></span><span></span><span></span></span>';box.appendChild(d);box.scrollTop=box.scrollHeight;return d;}
+  function localAnswer(q){
+    var ql=q.toLowerCase(),best=null,bs=0;
+    BANK.forEach(function(it){var s=0;it.k.forEach(function(w){if(ql.indexOf(w)>-1)s++;});if(s>bs){bs=s;best=it;}});
+    return best?best.a:DEFAULT;
+  }
+  function trimHist(){ if(history.length>MAX)history=history.slice(history.length-MAX); while(history.length&&history[0].role!=='user')history.shift(); }
+  async function ask(q){
+    if(!q.trim())return;
+    add('user',q); input.value=''; send.disabled=true;
+    var msgs=history.concat([{role:'user',content:q}]);
+    var t=typing(); var ok=false,reply='',rate=false;
+    try{
+      var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:SYS,messages:msgs})});
+      var data=await res.json();
+      if(res.ok){reply=(data.content||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('\n').trim(); if(reply)ok=true;}
+      else if(res.status===429||res.status===529)rate=true;
+    }catch(e){}
+    t.remove();
+    if(ok){
+      add('assistant',reply);
+      history=msgs.concat([{role:'assistant',content:reply}]); trimHist();
+    }else{
+      if(rate)add('assistant',"The live tutor is busy right now \u2014 try again in a moment for a full answer. Here's a built-in one in the meantime:");
+      add('assistant',localAnswer(q));
+      // failed turns are NOT committed to model history, so role order stays valid
+    }
+    send.disabled=false; input.focus();
+  }
+  send.addEventListener('click',function(){ask(input.value);});
+  input.addEventListener('keydown',function(e){if(e.key==='Enter')ask(input.value);});
+  document.getElementById('tutorChips').addEventListener('click',function(e){var c=e.target.closest('.chip');if(c)ask(c.getAttribute('data-q'));});
+})();
+
+/* ===== QUIZ ===== */
+(function(){
+  var Q=[
+    {q:'What does "non-fungible" actually mean?',
+     o:['Extremely valuable','Unique and not interchangeable','Stored on Bitcoin','Impossible to copy'],a:1,
+     e:'Non-fungible means not interchangeable — each token is one of a kind, unlike a dollar or 1 ETH which are identical to any other.'},
+    {q:'When you buy an NFT, what are you really acquiring?',
+     o:['The copyright to the art','The only copy of the image','An on-chain record of ownership of a specific token','A file no one else can view'],a:2,
+     e:'You get the blockchain record that says you own token #N. Others can still copy the image; ownership (and any rights) is separate.'},
+    {q:'Why isn\'t the image usually stored on the blockchain itself?',
+     o:['It\'s illegal','On-chain storage is very expensive','Blockchains can\'t hold images','It would be too slow to view'],a:1,
+     e:'Storing large files on-chain costs a fortune in gas, so most NFTs store a link. Where that link points determines how durable the art is.'},
+    {q:'Which token standard is the classic "one unique token, one owner"?',
+     o:['ERC-20','ERC-721','ERC-1155','ERC-4626'],a:1,
+     e:'ERC-721 is the original NFT standard. ERC-20 is for fungible coins; ERC-1155 is a flexible multi-token standard.'},
+    {q:'What is "minting"?',
+     o:['Selling an NFT','Creating the token on-chain for the first time','Copying an image','Setting a price'],a:1,
+     e:'Minting writes a brand-new token onto the blockchain, assigning it an ID and owner. It usually costs a gas fee.'},
+    {q:'A collection\'s art is stored only on the creator\'s private website. What\'s the risk?',
+     o:['Nothing, it\'s permanent','If the site goes down, the token points to a dead link','The token gets deleted too','Gas fees rise'],a:1,
+     e:'Centralized storage is fragile. The token survives on-chain, but the image it references can vanish if that server disappears.'},
+    {q:'What are creator royalties?',
+     o:['A tax paid to Ethereum','A cut the artist earns on every resale','The minting fee','A government fee'],a:1,
+     e:'Royalties let creators earn a percentage each time their NFT is resold — though most marketplaces now make them optional.'},
+    {q:'Someone messages you a "free mint" link and asks you to sign a transaction. Best move?',
+     o:['Sign quickly before it expires','Verify the source and be very cautious — it may be a wallet drainer','Share your seed phrase to speed it up','Always trust free mints'],a:1,
+     e:'Unsolicited links and rushed "sign this" prompts are classic scams. Never share a seed phrase, and verify everything before signing.'}
+  ];
+  var card=document.getElementById('quizCard'),idx=0,score=0,answered=false;
+  function render(){
+    answered=false;var item=Q[idx];
+    card.innerHTML='<div class="cap">Question '+(idx+1)+' of '+Q.length+'</div><div class="qq">'+item.q+'</div><div class="qopts" id="qopts"></div><div class="qexpl" id="qexpl"></div><div class="qbar"><span id="qscore">Score: '+score+' / '+Q.length+'</span><button class="btn ghost sm" id="qnext" style="display:none">'+(idx<Q.length-1?'Next →':'See result')+'</button></div>';
+    var wrap=document.getElementById('qopts');
+    item.o.forEach(function(opt,i){var b=document.createElement('button');b.className='qopt';b.textContent=opt;b.addEventListener('click',function(){choose(i,b);});wrap.appendChild(b);});
+    document.getElementById('qnext').addEventListener('click',function(){if(idx<Q.length-1){idx++;render();}else{result();}});
+  }
+  function choose(i,btn){
+    if(answered)return;answered=true;var item=Q[idx];var opts=card.querySelectorAll('.qopt');
+    opts.forEach(function(o){o.disabled=true;});
+    if(i===item.a){btn.classList.add('correct');score++;}else{btn.classList.add('wrong');opts[item.a].classList.add('correct');}
+    document.getElementById('qscore').textContent='Score: '+score+' / '+Q.length;
+    var ex=document.getElementById('qexpl');ex.textContent=item.e;ex.classList.add('show');
+    document.getElementById('qnext').style.display='inline-block';
+  }
+  function result(){
+    var msg=score===Q.length?'Perfect — you can spot the hype from the substance. 🏆':score>=6?'Strong work! You get how NFTs really work. 💪':score>=4?'Good start — skim the sections you missed and retry. 📘':'No worries — the minter and demos above make it click. 🔁';
+    card.innerHTML='<div class="cap">Quiz complete</div><div class="qq" style="font-size:26px;margin-top:6px">You scored '+score+' / '+Q.length+'</div><p style="color:var(--muted);margin:0 0 16px">'+msg+'</p><button class="btn rare" id="qretry">Try again</button>';
+    document.getElementById('qretry').addEventListener('click',function(){idx=0;score=0;render();});
+  }
+  render();
+})();
+
+/* ===== GLOSSARY ===== */
+(function(){
+  var terms=[
+    ['NFT','A non-fungible token: a unique, ownable record on a blockchain, usually linked to an image, video or other asset.'],
+    ['Fungible','Interchangeable. One dollar or 1 ETH equals any other. NFTs are the opposite — non-fungible.'],
+    ['Mint','To create a new token on-chain for the first time, assigning it an ID and an owner. Usually costs gas.'],
+    ['Gas','The network fee paid (in the chain\'s coin, e.g. ETH) to process a transaction like minting or transferring.'],
+    ['Token ID','The unique number identifying one specific NFT within its collection\'s smart contract.'],
+    ['Smart contract','The on-chain program that issues a collection and tracks who owns each token ID.'],
+    ['tokenURI','A link stored in the token that points to its metadata (name, image, traits).'],
+    ['Metadata','The JSON describing an NFT — its name, image link and list of traits/attributes.'],
+    ['IPFS / Arweave','Decentralized storage that keeps NFT files available without relying on one company\'s server.'],
+    ['ERC-721','The original Ethereum standard for unique, one-owner NFTs.'],
+    ['ERC-1155','A multi-token standard supporting both unique and edition-based tokens in one contract.'],
+    ['Floor price','The lowest price any NFT in a collection is currently listed for — a rough "entry" cost.'],
+    ['Royalty','A percentage the original creator earns on each resale — now optional on most marketplaces.'],
+    ['PFP','"Profile picture" collection — generative avatars like CryptoPunks used as online identity.'],
+    ['Rarity','How uncommon an NFT\'s traits are; rarer combinations usually command higher prices.'],
+    ['Rug pull','A scam where creators hype a project, take the money, and abandon it.'],
+    ['Wallet','Software holding your keys; it proves ownership and lets you sign transactions. Guard the seed phrase.'],
+    ['Token-gating','Using ownership of an NFT to unlock access to content, events or communities.']
+  ];
+  var a=document.getElementById('glossaryA'),b=document.getElementById('glossaryB');
+  terms.forEach(function(t,i){var d=document.createElement('details');d.className='gitem';d.innerHTML='<summary>'+t[0]+'</summary><p>'+t[1]+'</p>';(i%2===0?a:b).appendChild(d);});
+})();
+
+/* ===== PROGRESS BAR ===== */
+(function(){
+  var bar=document.getElementById('progress');
+  window.addEventListener('scroll',function(){var h=document.documentElement,sc=h.scrollTop,max=h.scrollHeight-h.clientHeight;bar.style.width=(max>0?(sc/max*100):0)+'%';},{passive:true});
+})();
+</script>
+</body>
+</html>

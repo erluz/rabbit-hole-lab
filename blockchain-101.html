@@ -564,14 +564,14 @@
         <button class="chip" data-q="Give me a simple real-world analogy for a Merkle tree.">Merkle tree analogy</button>
         <button class="chip" data-q="What is a private key and why must I keep it secret?">Why keep keys secret?</button>
       </div>
-      <div class="chatbox" id="chatbox">
+      <div class="chatbox" id="chatbox" aria-live="polite">
         <div class="msg a">Hi! I'm your blockchain tutor. Ask me anything — how mining works, what a wallet really is, why gas fees spike, whatever's on your mind. Tap a suggestion above or type below. 👇</div>
       </div>
       <div class="inputrow">
         <input type="text" id="tutorInput" placeholder="Ask a blockchain question…" autocomplete="off">
         <button class="btn cobalt" id="tutorSend">Send</button>
       </div>
-      <p class="note">I explain concepts — I don't give investment or trading advice, and I can't see prices in real time.</p>
+      <p class="note">In the Claude app this is the full Claude model. Opened as a downloaded file, it answers common questions from a built-in bank. Concepts only — no investment or trading advice, and no live prices.</p>
     </div>
   </div>
 </section>
@@ -930,47 +930,57 @@ function markZeros(hash,need){var z=leadingZeros(hash);var a=hash.slice(0,Math.m
     .catch(function(){paintHeight(FALL.height,false);});
 })();
 
-/* ============ AI TUTOR (Claude) ============ */
+/* ============ AI TUTOR (live in-app + offline fallback) ============ */
 (function(){
-  var box=document.getElementById('chatbox'),input=document.getElementById('tutorInput'),
-      send=document.getElementById('tutorSend');
-  var history=[];
+  var box=document.getElementById('chatbox'),input=document.getElementById('tutorInput'),send=document.getElementById('tutorSend');
+  var history=[]; var MAX=10;
   var SYS="You are a warm, accurate blockchain tutor for complete beginners. Keep answers short (2-4 short paragraphs max), concrete, and jargon-light; define any term you must use. Use plain analogies. Be precise and factual about how blockchains, hashing, consensus, keys, Bitcoin and Ethereum work. If asked for price predictions, trading, or investment advice, gently decline and explain you only teach concepts. Never invent statistics; if unsure, say so. Do not use markdown headers; short plain paragraphs only.";
-  function add(role,text){
-    var d=document.createElement('div');d.className='msg '+(role==='user'?'u':'a');
-    d.textContent=text;box.appendChild(d);box.scrollTop=box.scrollHeight;return d;
+  var BANK=[
+    {k:["gas"],a:"Gas is the fee you pay to get a transaction processed on a blockchain like Ethereum. Every action \u2014 a payment, a swap, minting a token \u2014 takes computing work, and gas pays the validators who do it. When the network is busy, gas rises because everyone competes for limited space in the next block. It is paid in the network's own coin (ETH on Ethereum)."},
+    {k:["coin","token"],a:"A coin is the native currency of its own blockchain \u2014 BTC on Bitcoin, ETH on Ethereum \u2014 used to pay fees and secure the network. A token is created on top of an existing chain using a smart contract, borrowing that chain's security instead of having its own. So ETH is a coin, while the thousands of assets built on Ethereum (stablecoins, NFTs, project tokens) are tokens."},
+    {k:["secure","security","safe","hack","51","attack"],a:"Blockchains are secured by cryptography and decentralization: blocks are chained by hashes so tampering is instantly visible, and thousands of independent computers each keep a copy and check the rules. Rewriting history would mean out-powering the majority of the whole network (a 51% attack), which is astronomically expensive on large chains. The real risks are usually at the edges: scam sites, phishing, lost private keys, and buggy smart contracts."},
+    {k:["merkle"],a:"A Merkle tree fingerprints a big batch of transactions into one small hash. Picture pairing transactions, hashing each pair, then hashing those results, and so on until a single hash remains at the top \u2014 the Merkle root. It lets anyone prove one transaction is included without downloading the whole block. Think of a tournament bracket where each match combines two fingerprints into one winner."},
+    {k:["private key","private","seed","wallet","metamask"],a:"A private key is a secret number that proves you own your crypto \u2014 whoever holds it controls the funds, with no password reset and no support line. Your public address is derived from it and is safe to share; the private key (often a 12\u201324 word seed phrase) must stay secret. Never type your seed phrase into a website and never share it \u2014 anyone who gets it can take everything instantly."},
+    {k:["hash","hashing"],a:"A hash function turns any input into a fixed-length fingerprint. It is quick to compute one way but effectively impossible to reverse, and changing a single character scrambles the entire output. Blockchains use hashes to link blocks together and to detect tampering: edit an old block and its hash changes, visibly breaking the chain."},
+    {k:["mining","mine","proof of work","proof of stake","consensus","pow","pos","stake","validator"],a:"Consensus is how a network with no boss agrees on one shared history. In Proof of Work (Bitcoin), miners race to guess a number that makes a block's hash valid, spending electricity to earn the right to add it. In Proof of Stake (Ethereum since 2022), validators lock up coins as collateral and are chosen to propose blocks; cheat and your stake gets slashed. PoS uses roughly 99.9% less energy."},
+    {k:["smart contract","contract","dapp"],a:"A smart contract is a program stored on a blockchain that runs exactly as written, automatically, with no middleman: if X happens, do Y, enforced by the whole network. They power tokens, NFTs, and decentralized finance. The trade-off is that once deployed they are hard to change, so bugs can be costly."},
+    {k:["bitcoin","ethereum","btc","eth"],a:"Bitcoin is deliberately simple: digital money and a scarce store of value, capped at 21 million coins, secured by Proof of Work. Ethereum is a programmable platform \u2014 a world computer where developers deploy smart contracts \u2014 secured by Proof of Stake since 2022, with no fixed supply cap. Bitcoin optimizes for sound money; Ethereum optimizes for flexibility."},
+    {k:["what is a blockchain","what is blockchain","blockchain","ledger"],a:"A blockchain is a shared record book that thousands of computers keep copies of and agree on, with no central authority. Transactions are grouped into blocks, and each block is cryptographically linked to the one before it, so history cannot be quietly changed. That mix \u2014 shared, linked, and tamper-evident \u2014 lets strangers trust the same ledger without trusting each other."}
+  ];
+  var DEFAULT="I can only reach the full AI tutor when this page runs inside the Claude app. In offline mode I answer common questions from a built-in bank \u2014 try a suggestion chip above, or ask about hashing, mining, consensus, keys, wallets, gas, smart contracts, or Bitcoin vs Ethereum. The Glossary and Resources below also cover a lot.";
+  function add(role,text){var d=document.createElement('div');d.className='msg '+(role==='user'?'u':'a');d.textContent=text;box.appendChild(d);box.scrollTop=box.scrollHeight;return d;}
+  function typing(){var d=document.createElement('div');d.className='msg a';d.innerHTML='<span class="typing"><span></span><span></span><span></span></span>';box.appendChild(d);box.scrollTop=box.scrollHeight;return d;}
+  function localAnswer(q){
+    var ql=q.toLowerCase(),best=null,bs=0;
+    BANK.forEach(function(it){var s=0;it.k.forEach(function(w){if(ql.indexOf(w)>-1)s++;});if(s>bs){bs=s;best=it;}});
+    return best?best.a:DEFAULT;
   }
-  function typing(){
-    var d=document.createElement('div');d.className='msg a';
-    d.innerHTML='<span class="typing"><span></span><span></span><span></span></span>';
-    box.appendChild(d);box.scrollTop=box.scrollHeight;return d;
-  }
+  function trimHist(){ if(history.length>MAX)history=history.slice(history.length-MAX); while(history.length&&history[0].role!=='user')history.shift(); }
   async function ask(q){
     if(!q.trim())return;
-    add('user',q);history.push({role:'user',content:q});
-    input.value='';send.disabled=true;
-    var t=typing();
+    add('user',q); input.value=''; send.disabled=true;
+    var msgs=history.concat([{role:'user',content:q}]);
+    var t=typing(); var ok=false,reply='',rate=false;
     try{
-      var res=await fetch('https://api.anthropic.com/v1/messages',{
-        method:'POST',headers:{'Content-Type':'application/json'},
-        body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:SYS,messages:history})
-      });
+      var res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-6',max_tokens:1000,system:SYS,messages:msgs})});
       var data=await res.json();
-      var text=(data.content||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('\n').trim();
-      t.remove();
-      if(text){add('assistant',text);history.push({role:'assistant',content:text});}
-      else{add('assistant','Hmm, I didn\'t get a response that time. Try rephrasing your question?');}
-    }catch(e){
-      t.remove();
-      add('assistant','I couldn\'t reach the tutor service just now. Check your connection and try again — meanwhile, the Glossary and Resources sections below cover a lot!');
+      if(res.ok){reply=(data.content||[]).filter(function(b){return b.type==='text';}).map(function(b){return b.text;}).join('\n').trim(); if(reply)ok=true;}
+      else if(res.status===429||res.status===529)rate=true;
+    }catch(e){}
+    t.remove();
+    if(ok){
+      add('assistant',reply);
+      history=msgs.concat([{role:'assistant',content:reply}]); trimHist();
+    }else{
+      if(rate)add('assistant',"The live tutor is busy right now \u2014 try again in a moment for a full answer. Here's a built-in one in the meantime:");
+      add('assistant',localAnswer(q));
+      // failed turns are NOT committed to model history, so role order stays valid
     }
-    send.disabled=false;input.focus();
+    send.disabled=false; input.focus();
   }
   send.addEventListener('click',function(){ask(input.value);});
   input.addEventListener('keydown',function(e){if(e.key==='Enter')ask(input.value);});
-  document.getElementById('tutorChips').addEventListener('click',function(e){
-    var c=e.target.closest('.chip');if(c)ask(c.getAttribute('data-q'));
-  });
+  document.getElementById('tutorChips').addEventListener('click',function(e){var c=e.target.closest('.chip');if(c)ask(c.getAttribute('data-q'));});
 })();
 
 /* ============ QUIZ ============ */
