@@ -1,0 +1,901 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Penguin 101 — Everything About the Spheniscidae</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,900;1,9..144,500&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Countershading + Southern Ocean palette */
+  --abyss:#08151f;        /* deepest water */
+  --deep:#0d2436;         /* section base */
+  --sea:#123a54;          /* raised surfaces */
+  --current:#1c5877;      /* mid ocean */
+  --ice:#bfe3ee;          /* glacier pale */
+  --snow:#eef8fb;         /* belly white */
+  --mist:#8fb4c6;         /* muted text */
+  --gold:#f4b642;         /* king-penguin auricular patch — the one warm accent */
+  --gold-2:#f27f3d;       /* beak orange */
+  --coral:#e8663f;        /* krill / alert */
+  --line:rgba(191,227,238,.14);
+  --ok:#57c08a; --near:#e7c14a; --vuln:#f0973f; --end:#e8663f; --crit:#d63b3b;
+
+  --display:'Fraunces',Georgia,serif;
+  --body:'Inter',system-ui,-apple-system,sans-serif;
+  --mono:'Space Mono','Courier New',monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--abyss);
+  color:var(--snow);
+  font-family:var(--body);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+/* ambient depth gradient */
+body::before{
+  content:"";position:fixed;inset:0;z-index:-2;
+  background:
+    radial-gradient(1200px 600px at 80% -5%, rgba(28,88,119,.35), transparent 60%),
+    radial-gradient(900px 700px at 10% 110%, rgba(8,21,31,1), transparent 55%),
+    linear-gradient(180deg,#0e2c40 0%,#08151f 55%,#05101a 100%);
+}
+/* drifting bubbles */
+body::after{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.5;
+  background-image:
+    radial-gradient(2px 2px at 20% 30%,rgba(191,227,238,.5),transparent),
+    radial-gradient(2px 2px at 70% 60%,rgba(191,227,238,.35),transparent),
+    radial-gradient(1.5px 1.5px at 40% 80%,rgba(191,227,238,.4),transparent),
+    radial-gradient(1.5px 1.5px at 88% 25%,rgba(191,227,238,.3),transparent),
+    radial-gradient(2px 2px at 55% 15%,rgba(191,227,238,.3),transparent);
+  animation:drift 26s linear infinite;
+}
+@keyframes drift{from{transform:translateY(0)}to{transform:translateY(-60px)}}
+
+/* ---------- NAV ---------- */
+header{
+  position:sticky;top:0;z-index:50;
+  backdrop-filter:blur(12px);
+  background:rgba(8,21,31,.72);
+  border-bottom:1px solid var(--line);
+}
+.nav-inner{max-width:1180px;margin:0 auto;padding:.55rem 1.25rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:.55rem;font-family:var(--display);font-weight:900;font-size:1.15rem;letter-spacing:.2px}
+.brand svg{width:26px;height:26px;flex:0 0 auto}
+.brand .num{font-family:var(--mono);color:var(--gold);font-size:.85rem;margin-left:.1rem}
+nav{display:flex;gap:.15rem;flex-wrap:wrap;margin-left:auto}
+.tab{
+  font:600 .78rem/1 var(--body);letter-spacing:.02em;
+  color:var(--mist);background:none;border:0;cursor:pointer;
+  padding:.5rem .7rem;border-radius:999px;transition:.18s;white-space:nowrap;
+}
+.tab:hover{color:var(--snow);background:rgba(191,227,238,.08)}
+.tab[aria-selected="true"]{color:var(--abyss);background:var(--gold)}
+.tab:focus-visible{outline:2px solid var(--ice);outline-offset:2px}
+
+/* ---------- LAYOUT ---------- */
+main{max-width:1180px;margin:0 auto;padding:0 1.25rem 5rem}
+.chapter{display:none;animation:rise .5s ease both}
+.chapter.active{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+
+.eyebrow{font:700 .72rem/1 var(--mono);letter-spacing:.22em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:.6rem}
+.eyebrow::before{content:"";width:26px;height:1px;background:var(--gold);display:inline-block}
+h1,h2,h3{font-family:var(--display);font-weight:900;line-height:1.02;letter-spacing:-.01em}
+h2.title{font-size:clamp(2rem,5vw,3.4rem);margin:.6rem 0 .4rem}
+.lede{font-size:clamp(1.05rem,2vw,1.28rem);color:var(--ice);max-width:64ch;font-weight:400}
+.lede em{font-style:italic;color:var(--gold)}
+
+.card{background:linear-gradient(180deg,rgba(18,58,84,.5),rgba(13,36,54,.5));border:1px solid var(--line);border-radius:16px;padding:1.4rem}
+.grid{display:grid;gap:1.1rem}
+section.block{padding:3.2rem 0;border-bottom:1px solid var(--line)}
+section.block:last-child{border-bottom:0}
+p.body{color:var(--ice);max-width:66ch;margin-top:.7rem}
+p.body + p.body{margin-top:.9rem}
+.muted{color:var(--mist)}
+a.link{color:var(--gold)}
+
+/* ---------- HERO ---------- */
+.hero{display:grid;grid-template-columns:1.15fr .85fr;gap:2rem;align-items:center;padding:3.2rem 0 2.4rem}
+.hero-stats{display:flex;gap:1.5rem;margin-top:1.8rem;flex-wrap:wrap}
+.hstat .n{font-family:var(--display);font-weight:900;font-size:2rem;color:var(--snow);line-height:1}
+.hstat .n small{font-size:1rem;color:var(--gold);font-family:var(--mono);font-weight:700}
+.hstat .l{font:500 .78rem/1.3 var(--body);color:var(--mist);margin-top:.35rem;max-width:16ch}
+.countershade-note{margin-top:1.3rem;font:400 .82rem/1.5 var(--body);color:var(--mist);border-left:2px solid var(--gold);padding-left:.8rem;max-width:40ch}
+
+/* ---------- STAT STRIP ---------- */
+.strip{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:2rem}
+.strip .cell{background:var(--deep);padding:1.1rem 1.2rem}
+.strip .cell .k{font-family:var(--display);font-weight:900;font-size:1.7rem;color:var(--gold)}
+.strip .cell .v{font:500 .78rem/1.3 var(--body);color:var(--mist);margin-top:.2rem}
+
+/* ---------- SPECIES EXPLORER ---------- */
+.filters{display:flex;gap:.4rem;flex-wrap:wrap;margin:1.4rem 0}
+.chip{font:600 .74rem/1 var(--body);color:var(--ice);background:rgba(191,227,238,.06);border:1px solid var(--line);padding:.5rem .8rem;border-radius:999px;cursor:pointer;transition:.15s}
+.chip:hover{border-color:var(--current)}
+.chip[aria-pressed="true"]{background:var(--gold);color:var(--abyss);border-color:var(--gold)}
+.chip:focus-visible{outline:2px solid var(--ice);outline-offset:2px}
+.species-grid{grid-template-columns:repeat(auto-fill,minmax(232px,1fr))}
+.sp{position:relative;overflow:hidden;cursor:default;transition:.2s;border-radius:14px}
+.sp:hover{transform:translateY(-3px);border-color:var(--current)}
+.sp .top{display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem}
+.sp .sil{width:46px;height:46px;flex:0 0 auto}
+.sp h3{font-size:1.12rem;line-height:1.05}
+.sp .sci{font:italic 400 .8rem/1.2 var(--display);color:var(--mist)}
+.sp .genus{font:700 .62rem/1 var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--current);margin-top:.5rem}
+.sp .facts{margin-top:.7rem;display:grid;grid-template-columns:1fr 1fr;gap:.35rem .7rem;font-size:.78rem;color:var(--ice)}
+.sp .facts b{color:var(--snow);font-weight:600}
+.status{display:inline-flex;align-items:center;gap:.35rem;font:700 .64rem/1 var(--mono);letter-spacing:.04em;padding:.3rem .5rem;border-radius:6px;white-space:nowrap}
+.status .dot{width:7px;height:7px;border-radius:50%}
+.s-LC{background:rgba(87,192,138,.14);color:#8fe0b3}.s-LC .dot{background:var(--ok)}
+.s-NT{background:rgba(231,193,74,.14);color:#f0d67f}.s-NT .dot{background:var(--near)}
+.s-VU{background:rgba(240,151,63,.14);color:#f6bd85}.s-VU .dot{background:var(--vuln)}
+.s-EN{background:rgba(232,102,63,.16);color:#f4a888}.s-EN .dot{background:var(--end)}
+.s-CR{background:rgba(214,59,59,.18);color:#f19595}.s-CR .dot{background:var(--crit)}
+.sp .blurb{font-size:.8rem;color:var(--mist);margin-top:.7rem;border-top:1px solid var(--line);padding-top:.6rem}
+
+/* ---------- FAMILY TREE ---------- */
+.tree{margin-top:1.6rem}
+.branch{border-left:2px solid var(--line);padding:0 0 1.3rem 1.2rem;margin-left:.4rem;position:relative}
+.branch::before{content:"";position:absolute;left:-6px;top:.35rem;width:10px;height:10px;border-radius:50%;background:var(--gold)}
+.branch .gname{font-family:var(--display);font-weight:900;font-size:1.25rem}
+.branch .gname i{font-weight:600;font-style:italic;color:var(--gold);font-size:1rem}
+.branch .gmeta{font:500 .8rem/1.4 var(--body);color:var(--mist);margin:.15rem 0 .5rem}
+.branch .members{display:flex;gap:.4rem;flex-wrap:wrap}
+.branch .members span{font:600 .74rem/1 var(--body);background:rgba(191,227,238,.06);border:1px solid var(--line);padding:.4rem .6rem;border-radius:7px;color:var(--ice)}
+
+/* ---------- ADAPTATIONS ---------- */
+.anat{display:grid;grid-template-columns:.9fr 1.1fr;gap:2rem;align-items:center;margin-top:1.6rem}
+.adapt-list{display:grid;gap:.7rem}
+.adapt{display:flex;gap:.9rem;padding:.9rem 1rem;border:1px solid var(--line);border-radius:12px;background:rgba(18,58,84,.28);cursor:pointer;transition:.18s}
+.adapt:hover{border-color:var(--current);background:rgba(18,58,84,.5)}
+.adapt .ico{width:34px;height:34px;flex:0 0 auto;color:var(--gold)}
+.adapt h4{font:700 .95rem/1.2 var(--body);color:var(--snow)}
+.adapt p{font-size:.82rem;color:var(--mist);margin-top:.2rem}
+
+/* ---------- CHARTS ---------- */
+.figure{margin-top:1.6rem;background:rgba(8,21,31,.4);border:1px solid var(--line);border-radius:16px;padding:1.4rem 1.2rem}
+.figure .cap{font:600 .78rem/1.4 var(--body);color:var(--mist);margin-top:.9rem}
+.figure .cap b{color:var(--ice)}
+.depth-row{display:flex;align-items:center;gap:.8rem;margin:.3rem 0}
+.depth-row .name{width:118px;flex:0 0 auto;font:600 .8rem/1.2 var(--body);text-align:right;color:var(--ice)}
+.depth-bar{position:relative;flex:1;height:26px;background:rgba(191,227,238,.05);border-radius:6px;overflow:hidden}
+.depth-fill{height:100%;border-radius:6px;background:linear-gradient(90deg,var(--current),var(--gold));width:0;transition:width 1.1s cubic-bezier(.2,.7,.2,1)}
+.depth-val{width:74px;flex:0 0 auto;font:700 .8rem/1 var(--mono);color:var(--gold)}
+
+.speed-row{display:flex;align-items:center;gap:.8rem;margin:.55rem 0}
+.speed-row .name{width:118px;text-align:right;font:600 .8rem/1.2 var(--body);color:var(--ice)}
+.speed-track{flex:1;height:10px;background:rgba(191,227,238,.05);border-radius:999px;overflow:hidden}
+.speed-fill{height:100%;background:linear-gradient(90deg,var(--current),var(--ice));width:0;transition:width 1s ease}
+.speed-val{width:70px;font:700 .8rem/1 var(--mono);color:var(--ice)}
+
+/* size comparison */
+.size-stage{display:flex;align-items:flex-end;justify-content:center;gap:clamp(.6rem,3vw,2.2rem);min-height:320px;padding-top:1rem;flex-wrap:wrap}
+.size-item{display:flex;flex-direction:column;align-items:center;gap:.5rem;text-align:center}
+.size-item svg{display:block}
+.size-item .lab{font:600 .78rem/1.2 var(--body);color:var(--ice)}
+.size-item .h{font:700 .72rem/1 var(--mono);color:var(--gold)}
+
+/* ---------- LIFE CYCLE ---------- */
+.cycle{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:1.6rem}
+.stage{background:var(--deep);padding:1.2rem;position:relative}
+.stage .no{font:700 .72rem/1 var(--mono);color:var(--gold)}
+.stage h4{font:700 1rem/1.15 var(--body);color:var(--snow);margin:.5rem 0 .4rem}
+.stage p{font-size:.8rem;color:var(--mist)}
+.emperor-story{margin-top:1.6rem;display:grid;grid-template-columns:auto 1fr;gap:1.4rem;align-items:center}
+
+/* ---------- MAP ---------- */
+.map-wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:1.8rem;align-items:center;margin-top:1.6rem}
+.legend{display:grid;gap:.55rem}
+.legend .row{display:flex;gap:.7rem;align-items:flex-start;font-size:.85rem;color:var(--ice)}
+.legend .sw{width:14px;height:14px;border-radius:50%;flex:0 0 auto;margin-top:.2rem}
+
+/* ---------- CONSERVATION ---------- */
+.cons-bars{display:grid;gap:.55rem;margin-top:1.4rem}
+.cbar{display:flex;align-items:center;gap:.8rem}
+.cbar .cl{width:150px;text-align:right;font:600 .78rem/1.2 var(--body);color:var(--ice)}
+.cbar .ct{flex:1;height:22px;background:rgba(191,227,238,.05);border-radius:6px;overflow:hidden}
+.cbar .cf{height:100%;width:0;border-radius:6px;transition:width 1s ease}
+.cbar .cn{width:34px;font:700 .82rem/1 var(--mono);color:var(--ice)}
+.threats{grid-template-columns:repeat(auto-fill,minmax(180px,1fr));margin-top:1.6rem}
+.threat{padding:1rem}
+.threat .ico{width:30px;height:30px;color:var(--coral)}
+.threat h4{font:700 .92rem/1.2 var(--body);margin:.5rem 0 .3rem}
+.threat p{font-size:.8rem;color:var(--mist)}
+.callout{margin-top:1.8rem;border:1px solid rgba(214,59,59,.35);background:linear-gradient(180deg,rgba(214,59,59,.1),rgba(13,36,54,.4));border-radius:16px;padding:1.5rem}
+.callout .tag{font:700 .68rem/1 var(--mono);letter-spacing:.16em;text-transform:uppercase;color:#f19595}
+.callout h3{font-size:1.5rem;margin:.5rem 0}
+
+/* ---------- QUIZ ---------- */
+.quiz{max-width:640px;margin-top:1.6rem}
+.q{border:1px solid var(--line);border-radius:14px;padding:1.3rem;background:rgba(18,58,84,.3);margin-bottom:1rem}
+.q .qh{font:700 .72rem/1 var(--mono);color:var(--gold);letter-spacing:.1em}
+.q .qt{font-family:var(--display);font-weight:600;font-size:1.15rem;margin:.5rem 0 .9rem}
+.opts{display:grid;gap:.5rem}
+.opt{text-align:left;font:500 .88rem/1.3 var(--body);color:var(--ice);background:rgba(191,227,238,.05);border:1px solid var(--line);border-radius:9px;padding:.7rem .9rem;cursor:pointer;transition:.15s}
+.opt:hover:not(:disabled){border-color:var(--current)}
+.opt:disabled{cursor:default}
+.opt.correct{background:rgba(87,192,138,.2);border-color:var(--ok);color:#c9f3dd}
+.opt.wrong{background:rgba(214,59,59,.18);border-color:var(--crit);color:#f3c9c9}
+.explain{font-size:.82rem;color:var(--mist);margin-top:.7rem;display:none}
+.explain.show{display:block}
+.scorecard{text-align:center;padding:2rem;border:1px solid var(--gold);border-radius:16px;background:rgba(244,182,66,.08);display:none}
+.scorecard.show{display:block}
+.scorecard .big{font-family:var(--display);font-weight:900;font-size:3rem;color:var(--gold)}
+
+/* ---------- FOOTER ---------- */
+footer{max-width:1180px;margin:0 auto;padding:2.5rem 1.25rem 4rem;border-top:1px solid var(--line);color:var(--mist);font-size:.82rem}
+footer h4{font:700 .72rem/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--ice);margin-bottom:.7rem}
+footer a{color:var(--gold);text-decoration:none}
+footer a:hover{text-decoration:underline}
+.src-list{columns:2;column-gap:2rem;font-size:.78rem;line-height:1.7}
+
+/* species links + live badge */
+.sp-links{display:flex;align-items:center;gap:.55rem;margin-top:.75rem;flex-wrap:wrap}
+.sp-photo{font:700 .7rem/1 var(--body);color:var(--gold);text-decoration:none;border:1px solid rgba(244,182,66,.4);padding:.42rem .6rem;border-radius:7px;transition:.15s}
+.sp-photo:hover{background:var(--gold);color:var(--abyss)}
+.sp-live{display:inline-flex;align-items:center;gap:.35rem;font:700 .64rem/1 var(--mono);color:#f19595;text-decoration:none;cursor:pointer;background:none;border:0;padding:.3rem 0}
+.sp-live:hover{color:#f3c9c9}
+.live-dot{width:7px;height:7px;border-radius:50%;background:#e8663f;animation:pulse 1.8s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(232,102,63,.55)}70%{box-shadow:0 0 0 7px rgba(232,102,63,0)}100%{box-shadow:0 0 0 0 rgba(232,102,63,0)}}
+/* cam cards */
+.cam-grid{grid-template-columns:repeat(auto-fill,minmax(262px,1fr))}
+.cam{display:flex;flex-direction:column;gap:.55rem}
+.cam .cam-top{display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem}
+.cam h3{font-size:1.18rem;line-height:1.05}
+.cam .loc{font:700 .66rem/1.2 var(--mono);color:var(--current);text-transform:uppercase;letter-spacing:.1em}
+.cam .shows{font-size:.83rem;color:var(--ice)}
+.live-badge{display:inline-flex;align-items:center;gap:.4rem;font:700 .62rem/1 var(--mono);color:#f3c9c9;background:rgba(214,59,59,.18);border:1px solid rgba(214,59,59,.4);padding:.36rem .5rem;border-radius:999px;flex:0 0 auto}
+.watch-btn{margin-top:auto;display:inline-flex;align-items:center;justify-content:center;gap:.4rem;font:700 .84rem/1 var(--body);color:var(--abyss);background:var(--gold);border-radius:9px;padding:.72rem;text-decoration:none;transition:.15s}
+.watch-btn:hover{background:#ffca5a;transform:translateY(-1px)}
+
+@media(max-width:820px){
+  .hero,.anat,.emperor-story,.map-wrap{grid-template-columns:1fr}
+  .strip{grid-template-columns:repeat(2,1fr)}
+  nav{width:100%;margin-left:0;overflow-x:auto;padding-bottom:.2rem}
+  .src-list{columns:1}
+  .depth-row .name,.speed-row .name{width:92px;font-size:.72rem}
+  .cbar .cl{width:104px;font-size:.7rem}
+}
+@media(prefers-reduced-motion:reduce){
+  *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+</style>
+</head>
+<body>
+
+<!-- reusable penguin silhouette -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="peng" viewBox="0 0 100 160">
+    <path d="M50 4c-15 0-25 12-25 30 0 8 2 14 2 22-6 8-13 22-13 46 0 30 14 48 36 48s36-18 36-48c0-24-7-38-13-46 0-8 2-14 2-22C77 16 65 4 50 4z"/>
+    <path d="M50 30c-11 0-18 9-18 24 0 10 3 18 3 26-4 7-9 18-9 34 0 22 9 34 24 34s24-12 24-34c0-16-5-27-9-34 0-8 3-16 3-26 0-15-7-24-18-24z" fill="#eef8fb" opacity="0.95"/>
+  </symbol>
+  <symbol id="peng-flat" viewBox="0 0 100 160">
+    <path d="M50 4c-15 0-25 12-25 30 0 8 2 14 2 22-6 8-13 22-13 46 0 30 14 48 36 48s36-18 36-48c0-24-7-38-13-46 0-8 2-14 2-22C77 16 65 4 50 4z"/>
+  </symbol>
+</svg>
+
+<header>
+  <div class="nav-inner">
+    <div class="brand">
+      <svg viewBox="0 0 100 160"><use href="#peng" fill="#0d2436"/><circle cx="62" cy="34" r="6" fill="#f4b642"/></svg>
+      Penguin<span class="num">101</span>
+    </div>
+    <nav role="tablist" aria-label="Chapters">
+      <button class="tab" role="tab" aria-selected="true" data-tab="intro">Meet them</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="species">18 Species</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="tree">Family Tree</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="body">Built for the Deep</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="records">Superlatives</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="life">Life Cycle</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="range">Where They Live</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="conserve">Conservation</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="watch">Watch Live</button>
+      <button class="tab" role="tab" aria-selected="false" data-tab="quiz">Quiz</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ INTRO ============ -->
+<section class="chapter active" id="intro" role="tabpanel">
+  <div class="hero">
+    <div>
+      <p class="eyebrow">Family Spheniscidae · Order Sphenisciformes</p>
+      <h1 style="font-size:clamp(2.4rem,6.5vw,4.6rem);margin:.5rem 0">The birds that traded the sky for the sea.</h1>
+      <p class="lede">Penguins are the only birds besides ratites that gave up flight entirely — and in exchange they became some of the finest <em>underwater athletes on Earth</em>. Eighteen living species, almost all south of the equator, wrapped in the densest feathers of any bird.</p>
+      <div class="hero-stats">
+        <div class="hstat"><div class="n">18</div><div class="l">living species, in 6 genera</div></div>
+        <div class="hstat"><div class="n">~60<small>Mya</small></div><div class="l">since penguins lost flight</div></div>
+        <div class="hstat"><div class="n">1</div><div class="l">species north of the equator</div></div>
+      </div>
+      <p class="countershade-note"><b style="color:var(--ice)">Why this page is dark on top, bright below.</b> It borrows a penguin's own trick — <b style="color:var(--gold)">countershading</b>: a dark back that vanishes against deep water when seen from above, and a white belly that blends with bright sky when seen from below.</p>
+    </div>
+    <div style="display:flex;justify-content:center">
+      <svg viewBox="0 0 240 300" style="width:min(320px,80vw)" aria-label="Countershaded penguin diagram">
+        <defs>
+          <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#1c5877" stop-opacity=".5"/>
+            <stop offset="1" stop-color="#08151f" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <rect x="0" y="0" width="240" height="300" fill="url(#water)" rx="18"/>
+        <g transform="translate(70,40) scale(.62)">
+          <use href="#peng" fill="#0e2233"/>
+        </g>
+        <!-- annotation lines -->
+        <line x1="150" y1="70" x2="205" y2="55" stroke="#f4b642" stroke-width="1.5"/>
+        <circle cx="205" cy="55" r="3" fill="#f4b642"/>
+        <text x="210" y="52" fill="#f4b642" font-family="Space Mono, monospace" font-size="10">DARK BACK</text>
+        <text x="210" y="66" fill="#8fb4c6" font-family="Inter, sans-serif" font-size="9">hides from above</text>
+        <line x1="118" y1="210" x2="40" y2="235" stroke="#eef8fb" stroke-width="1.5"/>
+        <circle cx="40" cy="235" r="3" fill="#eef8fb"/>
+        <text x="14" y="252" fill="#eef8fb" font-family="Space Mono, monospace" font-size="10">WHITE BELLY</text>
+        <text x="14" y="266" fill="#8fb4c6" font-family="Inter, sans-serif" font-size="9">hides from below</text>
+        <circle cx="118" cy="72" r="5" fill="#f4b642"/>
+      </svg>
+    </div>
+  </div>
+
+  <div class="strip">
+    <div class="cell"><div class="k">100%</div><div class="v">flightless — wings became flippers</div></div>
+    <div class="cell"><div class="k">564 m</div><div class="v">deepest recorded dive (emperor)</div></div>
+    <div class="cell"><div class="k">36 km/h</div><div class="v">top swim speed (gentoo) — fastest bird in water</div></div>
+    <div class="cell"><div class="k">~11 / 18</div><div class="v">species now globally threatened</div></div>
+  </div>
+
+  <section class="block">
+    <p class="eyebrow">The one-minute briefing</p>
+    <h2 class="title">What actually makes a penguin a penguin</h2>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr));margin-top:1.4rem">
+      <div class="card"><h3 style="font-size:1.2rem;color:var(--gold)">Wings that row, not fly</h3><p class="body" style="margin-top:.5rem">Every penguin's wings have flattened into stiff flippers. They literally "fly" underwater, flapping to generate thrust rather than gliding through air.</p></div>
+      <div class="card"><h3 style="font-size:1.2rem;color:var(--gold)">Southern by nature</h3><p class="body" style="margin-top:.5rem">Native only to the Southern Hemisphere — from the Antarctic ice to temperate coasts. Only the Galápagos penguin lives on the equator, kept cool by chilly ocean currents.</p></div>
+      <div class="card"><h3 style="font-size:1.2rem;color:var(--gold)">Dressed for freezing water</h3><p class="body" style="margin-top:.5rem">Short, overlapping, oiled feathers packed tighter than any other bird's, plus a layer of blubber. Together they supply most of a penguin's insulation on land and at sea.</p></div>
+    </div>
+    <p class="body" style="margin-top:1.4rem">Not all penguins are creatures of ice. Larger species tend to live in the coldest places, while smaller ones spread into temperate and even tropical waters. Some ancestors were giants — fossil penguins from tens of millions of years ago reached the size of an adult human, and one recently described species may have weighed around 150&nbsp;kg. Use the tabs above to dive into any topic; every number here is drawn from the sources listed at the bottom.</p>
+  </section>
+</section>
+
+<!-- ============ SPECIES ============ -->
+<section class="chapter" id="species" role="tabpanel">
+  <section class="block" style="border:0;padding-bottom:1rem">
+    <p class="eyebrow">The complete roster</p>
+    <h2 class="title">All 18 living penguins</h2>
+    <p class="lede">Filter by genus, or by how much trouble each species is in. Scientific authorities count between 17 and 19 species depending on how they treat the rockhoppers and little penguins; this follows the widely used total of <em>18</em>. Each card links to real photos, and species with a <em>live cam</em> are marked.</p>
+    <div class="filters" id="genusFilters" role="group" aria-label="Filter species"></div>
+    <div class="grid species-grid" id="speciesGrid"></div>
+    <p class="muted" style="font-size:.8rem;margin-top:1.2rem">Conservation labels: <span class="status s-LC"><span class="dot"></span>Least Concern</span> · <span class="status s-NT"><span class="dot"></span>Near Threatened</span> · <span class="status s-VU"><span class="dot"></span>Vulnerable</span> · <span class="status s-EN"><span class="dot"></span>Endangered</span> · <span class="status s-CR"><span class="dot"></span>Critically Endangered</span> — per the IUCN Red List.</p>
+  </section>
+</section>
+
+<!-- ============ TREE ============ -->
+<section class="chapter" id="tree" role="tabpanel">
+  <section class="block" style="border:0">
+    <p class="eyebrow">Six genera, one family</p>
+    <h2 class="title">The penguin family tree</h2>
+    <p class="lede">All living penguins sit in a single family split into six branches. Broadly, the biggest and coldest-adapted are the <em>Aptenodytes</em>; the crested penguins (<em>Eudyptes</em>) are the most species-rich; and the banded <em>Spheniscus</em> reach furthest into warm water.</p>
+    <div class="tree" id="treeRoot"></div>
+  </section>
+</section>
+
+<!-- ============ BODY / ADAPTATIONS ============ -->
+<section class="chapter" id="body" role="tabpanel">
+  <section class="block" style="border:0">
+    <p class="eyebrow">Anatomy of a deep diver</p>
+    <h2 class="title">Built for the deep</h2>
+    <p class="lede">A penguin is a bundle of solutions to one hard problem: staying warm, fed, and oxygenated in cold water that would kill most animals in minutes. Tap any adaptation to see how it works.</p>
+    <div class="anat">
+      <svg viewBox="0 0 220 300" aria-label="Labeled penguin anatomy" style="width:min(280px,80vw);margin:0 auto">
+        <g transform="translate(40,20) scale(.85)">
+          <use href="#peng" fill="#12405e"/>
+        </g>
+        <!-- salt gland -->
+        <circle cx="118" cy="52" r="4" fill="#f4b642"/><line x1="118" y1="52" x2="175" y2="40" stroke="#f4b642" stroke-width="1"/>
+        <text x="150" y="30" fill="#f4b642" font-size="9" font-family="Space Mono,monospace">SALT GLAND</text>
+        <!-- feathers -->
+        <circle cx="70" cy="120" r="4" fill="#f4b642"/><line x1="70" y1="120" x2="18" y2="110" stroke="#f4b642" stroke-width="1"/>
+        <text x="2" y="102" fill="#f4b642" font-size="9" font-family="Space Mono,monospace">FEATHERS</text>
+        <text x="2" y="114" fill="#8fb4c6" font-size="8" font-family="Inter,sans-serif">+ blubber</text>
+        <!-- flipper -->
+        <circle cx="150" cy="150" r="4" fill="#f4b642"/><line x1="150" y1="150" x2="200" y2="165" stroke="#f4b642" stroke-width="1"/>
+        <text x="176" y="180" fill="#f4b642" font-size="9" font-family="Space Mono,monospace">FLIPPER</text>
+        <!-- bones -->
+        <circle cx="105" cy="200" r="4" fill="#f4b642"/><line x1="105" y1="200" x2="20" y2="215" stroke="#f4b642" stroke-width="1"/>
+        <text x="2" y="212" fill="#f4b642" font-size="9" font-family="Space Mono,monospace">DENSE BONES</text>
+        <!-- feet -->
+        <circle cx="105" cy="270" r="4" fill="#f4b642"/><line x1="105" y1="270" x2="170" y2="270" stroke="#f4b642" stroke-width="1"/>
+        <text x="150" y="266" fill="#f4b642" font-size="9" font-family="Space Mono,monospace">WEBBED FEET</text>
+      </svg>
+      <div class="adapt-list" id="adaptList"></div>
+    </div>
+  </section>
+</section>
+
+<!-- ============ RECORDS ============ -->
+<section class="chapter" id="records" role="tabpanel">
+  <section class="block" style="border:0">
+    <p class="eyebrow">Extremes & record-holders</p>
+    <h2 class="title">Penguin superlatives</h2>
+    <p class="lede">The family spans a giant that dives deeper than any bird and fasts through the polar winter, down to a knee-high sprite that weighs about as much as a bag of sugar.</p>
+
+    <h3 style="font-size:1.4rem;margin:2rem 0 .3rem">Height, to scale</h3>
+    <p class="muted" style="font-size:.85rem">Emperor to little penguin, with a 1.7&nbsp;m human for reference.</p>
+    <div class="figure"><div class="size-stage" id="sizeStage"></div></div>
+
+    <h3 style="font-size:1.4rem;margin:2.4rem 0 .3rem">How deep they dive</h3>
+    <p class="muted" style="font-size:.85rem">Maximum recorded depths. The emperor's record of 564&nbsp;m is the deepest dive ever measured for any bird — deeper than recreational scuba divers are ever meant to go.</p>
+    <div class="figure" id="depthFig"><div id="depthChart"></div>
+      <div class="cap"><b>For scale:</b> recreational scuba limit ≈ 40&nbsp;m · a nuclear submarine cruises near 240&nbsp;m · the emperor's record dive reached <b>564&nbsp;m</b> on a single breath, and its longest recorded dive lasted <b>32.2 minutes</b>.</div>
+    </div>
+
+    <h3 style="font-size:1.4rem;margin:2.4rem 0 .3rem">Top swimming speed</h3>
+    <p class="muted" style="font-size:.85rem">The gentoo is the fastest bird in water — quicker than the best human swimmers by a wide margin.</p>
+    <div class="figure" id="speedFig"><div id="speedChart"></div></div>
+
+    <div class="strip" style="margin-top:2.4rem">
+      <div class="cell"><div class="k">3–6</div><div class="v">heartbeats per minute during a deep dive (from 60–70 at rest)</div></div>
+      <div class="cell"><div class="k">~65 days</div><div class="v">a male emperor fasts while incubating through winter</div></div>
+      <div class="cell"><div class="k">~1 kg</div><div class="v">weight of the little penguin, the smallest species</div></div>
+      <div class="cell"><div class="k">−40°C</div><div class="v">and colder — endured on the open ice, no shelter</div></div>
+    </div>
+  </section>
+</section>
+
+<!-- ============ LIFE ============ -->
+<section class="chapter" id="life" role="tabpanel">
+  <section class="block" style="border:0">
+    <p class="eyebrow">Courtship to crèche</p>
+    <h2 class="title">The penguin life cycle</h2>
+    <p class="lede">Most penguins are colonial and seasonally monogamous, returning to the same patch — and often the same partner — year after year. Nests range from pebble rings to burrows to no nest at all.</p>
+    <div class="cycle" id="cycleRoot"></div>
+
+    <div class="emperor-story">
+      <svg viewBox="0 0 120 200" style="width:120px" aria-hidden="true">
+        <g transform="translate(20,20) scale(.55)"><use href="#peng" fill="#12405e"/></g>
+        <ellipse cx="46" cy="150" rx="16" ry="12" fill="#f4b642"/>
+        <text x="34" y="154" font-size="9" fill="#08151f" font-family="Space Mono,monospace">EGG</text>
+      </svg>
+      <div class="card">
+        <h3 style="font-size:1.4rem;color:var(--gold)">The emperor's winter</h3>
+        <p class="body" style="margin-top:.5rem">Emperors are the only bird that breeds during the Antarctic winter. The female lays a single egg, passes it to the male, and heads to sea to feed. For about <b style="color:var(--ice)">65 days</b> he balances the egg on his feet under a fold of belly skin, eating nothing, huddling with thousands of other males against −40°C winds. When the chick hatches, the female returns with food — and the exhausted male finally walks to the ocean to break his fast. Young then gather in nursery groups called <b style="color:var(--ice)">crèches</b> for warmth and safety.</p>
+      </div>
+    </div>
+  </section>
+</section>
+
+<!-- ============ RANGE ============ -->
+<section class="chapter" id="range" role="tabpanel">
+  <section class="block" style="border:0">
+    <p class="eyebrow">A southern world</p>
+    <h2 class="title">Where penguins live</h2>
+    <p class="lede">Penguins ring the Southern Hemisphere. They aren't only polar animals — cold currents carry the food that lets them live along temperate coasts of Africa, South America and Australasia, and even at the equator.</p>
+    <div class="map-wrap">
+      <svg viewBox="0 0 320 320" aria-label="Southern Hemisphere penguin range map" style="width:100%;max-width:420px;margin:0 auto">
+        <defs><radialGradient id="ocean" cx="50%" cy="50%" r="50%">
+          <stop offset="0" stop-color="#123a54"/><stop offset="1" stop-color="#08151f"/>
+        </radialGradient></defs>
+        <circle cx="160" cy="160" r="150" fill="url(#ocean)" stroke="var(--line)"/>
+        <!-- latitude rings -->
+        <circle cx="160" cy="160" r="100" fill="none" stroke="var(--line)" stroke-dasharray="3 5"/>
+        <circle cx="160" cy="160" r="50" fill="none" stroke="var(--line)" stroke-dasharray="3 5"/>
+        <!-- Antarctica -->
+        <path d="M120 130 q40 -18 80 0 q22 30 6 60 q-46 22 -92 0 q-14 -34 6 -60z" fill="#1c5877" opacity=".6"/>
+        <text x="160" y="165" fill="#bfe3ee" font-size="9" text-anchor="middle" font-family="Space Mono,monospace">ANTARCTICA</text>
+        <!-- landmass hints -->
+        <path d="M150 40 q18 10 10 34 q-14 8 -20 -6 q-4 -20 10 -28z" fill="#12405e" opacity=".5"/>
+        <text x="150" y="34" fill="#8fb4c6" font-size="8" text-anchor="middle">S. America</text>
+        <path d="M210 60 q16 6 14 26 q-10 12 -22 2 q-6 -18 8 -28z" fill="#12405e" opacity=".5"/>
+        <text x="228" y="52" fill="#8fb4c6" font-size="8">Africa</text>
+        <path d="M250 190 q18 4 16 22 q-12 10 -24 0 q-4 -14 8 -22z" fill="#12405e" opacity=".5"/>
+        <text x="270" y="188" fill="#8fb4c6" font-size="8">Australia</text>
+        <path d="M255 235 q10 4 8 16 q-8 6 -14 -2 q-2 -10 6 -14z" fill="#12405e" opacity=".5"/>
+        <text x="272" y="248" fill="#8fb4c6" font-size="8">NZ</text>
+        <!-- points -->
+        <g id="mapPoints"></g>
+        <!-- equator marker -->
+        <circle cx="158" cy="66" r="5" fill="none" stroke="#f4b642" stroke-width="1.5"/>
+        <text x="120" y="20" fill="#f4b642" font-size="8" font-family="Space Mono,monospace">◀ equator</text>
+      </svg>
+      <div class="legend">
+        <div class="row"><span class="sw" style="background:var(--ice)"></span><div><b>True Antarcticans</b> — emperor & Adélie breed on the continent and its pack ice.</div></div>
+        <div class="row"><span class="sw" style="background:var(--current)"></span><div><b>Sub-Antarctic islanders</b> — king, macaroni, rockhoppers and royal crowd remote southern islands.</div></div>
+        <div class="row"><span class="sw" style="background:var(--gold)"></span><div><b>Temperate coasts</b> — African, Humboldt, Magellanic and little penguins live on mild shores, following cold, fish-rich currents.</div></div>
+        <div class="row"><span class="sw" style="background:var(--coral)"></span><div><b>The equator</b> — the Galápagos penguin is the only species that lives (barely) north of the line, chilled by the Humboldt and Cromwell currents.</div></div>
+      </div>
+    </div>
+    <p class="body" style="margin-top:1.6rem">Why can penguins live in the tropics but never crossed into the Northern Hemisphere? The warm equatorial ocean is a barrier they've never breached — even the Galápagos penguin only survives thanks to cold upwelling water. Attempts by people to introduce penguins up north have always failed to establish.</p>
+  </section>
+</section>
+
+<!-- ============ CONSERVE ============ -->
+<section class="chapter" id="conserve" role="tabpanel">
+  <section class="block" style="border:0">
+    <p class="eyebrow">Sentinels of the Southern Ocean</p>
+    <h2 class="title">Conservation</h2>
+    <p class="lede">Most penguin populations are declining. Because they sit near the top of marine food webs, their trouble is an early warning about the health of the oceans themselves.</p>
+
+    <h3 style="font-size:1.3rem;margin:1.8rem 0 .4rem">How the 18 species break down by risk</h3>
+    <div class="cons-bars" id="consBars"></div>
+
+    <div class="callout">
+      <span class="tag">First of its kind · 2024</span>
+      <h3>The African penguin is now Critically Endangered</h3>
+      <p class="body">In late 2024 the African penguin became the first penguin ever listed as Critically Endangered by the IUCN — one step from extinct-in-the-wild. Its population has collapsed by roughly <b style="color:#f19595">97%</b>: from over a million birds a century ago to fewer than <b style="color:#f19595">10,000 breeding pairs</b>. The main drivers are competition with commercial fishing for the sardines and anchovies it eats, climate-shifted prey, oil spills, and — historically — the removal of the guano it once burrowed into to nest. Conservation groups have gone to court to win no-fishing zones around key colonies.</p>
+    </div>
+
+    <h3 style="font-size:1.3rem;margin:2.4rem 0 .4rem">The main threats</h3>
+    <div class="grid threats" id="threatsRoot"></div>
+
+    <div class="card" style="margin-top:2rem;border-color:rgba(87,192,138,.3)">
+      <h3 style="font-size:1.3rem;color:#8fe0b3">Reasons for hope</h3>
+      <p class="body" style="margin-top:.5rem">The 1959 Antarctic Treaty protects Antarctic species from hunting and disturbance. Marine protected areas and no-take fishing zones are expanding. Rescue and rehabilitation centres hand-rear abandoned chicks and clean oiled birds. Artificial nest boxes are boosting breeding success, and a few populations — some gentoo colonies among them — are actually growing as they shift range. Penguins are well-studied and much-loved, which makes them powerful ambassadors for ocean protection.</p>
+    </div>
+    <p class="muted" style="font-size:.78rem;margin-top:1.4rem">Conservation statuses follow the IUCN Red List. Most penguin assessments date from 2020; the African penguin was uplisted in 2024. Categories can change as new data arrives — always check the current Red List for the latest.</p>
+  </section>
+</section>
+
+<!-- ============ WATCH LIVE ============ -->
+<section class="chapter" id="watch" role="tabpanel">
+  <section class="block" style="border:0">
+    <p class="eyebrow">See them right now</p>
+    <h2 class="title">Watch penguins live</h2>
+    <p class="lede">Wild penguins spend much of their lives far offshore on remote coasts, so there's no dependable 24/7 wild-colony stream — the best live views come from conservation-focused aquariums and zoos. Between the cams below you can watch <em>eight of the 18 species</em> in real time.</p>
+    <div class="grid cam-grid" id="camGrid" style="margin-top:1.6rem"></div>
+    <p class="muted" style="font-size:.8rem;margin-top:1.4rem">Cams sometimes go offline for maintenance — Monterey Bay Aquarium's well-known penguin cam, for instance, is down during an exhibit renovation. If a link here isn't live, the explore.org hub usually has a working alternative. The liveliest moments are feeding times, which each facility posts on its own page. On the <b>18 Species</b> tab, any card marked <span style="color:#f19595">● LIVE CAM</span> can be watched here.</p>
+  </section>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section class="chapter" id="quiz" role="tabpanel">
+  <section class="block" style="border:0">
+    <p class="eyebrow">Test your knowledge</p>
+    <h2 class="title">The Penguin 101 quiz</h2>
+    <p class="lede">Eight questions, drawn straight from this page. Pick an answer to see whether you got it — and why.</p>
+    <div class="quiz" id="quizRoot"></div>
+    <div class="scorecard" id="scorecard">
+      <div class="big" id="scoreNum">0/8</div>
+      <p id="scoreMsg" class="body" style="margin:.4rem auto 0;max-width:40ch"></p>
+      <button class="chip" style="margin-top:1rem" onclick="location.reload()">Try again</button>
+    </div>
+  </section>
+</section>
+
+</main>
+
+<footer>
+  <h4>Sources & further reading</h4>
+  <p style="margin-bottom:1rem;max-width:70ch">Every figure on this page was checked against the references below. Where authorities differ (for example, the exact species count or a regional dive record), the most widely cited value is used and the disagreement is noted in the text.</p>
+  <div class="src-list">
+    <p>· IUCN Red List of Threatened Species — species assessments &amp; categories</p>
+    <p>· BirdLife International — <a href="https://www.birdlife.org/birds/list-of-penguin-species/" target="_blank" rel="noopener">list of penguin species</a> &amp; African penguin status</p>
+    <p>· International Ornithologists' Union — IOC World Bird List (species &amp; genera)</p>
+    <p>· Guinness World Records — deepest dive by a bird (564 m, emperor)</p>
+    <p>· Australian Antarctic Program — emperor penguin diving &amp; incubation</p>
+    <p>· Penguins International — record-breakers &amp; species biology</p>
+    <p>· Wikipedia — Penguin, African penguin, Gentoo penguin (with cited primary sources)</p>
+    <p>· Marine Ecology Progress Series (2018) — 32.2-minute emperor dive</p>
+  </div>
+  <p style="margin-top:1.6rem;color:var(--mist)">Built as an educational overview. Penguin illustrations are original stylised silhouettes. Conservation data current to the 2024 IUCN assessment cycle.</p>
+</footer>
+
+<script>
+/* ========== DATA ========== */
+const SPECIES=[
+ {n:"Emperor",sci:"Aptenodytes forsteri",g:"Aptenodytes",st:"NT",h:"115 cm",w:"22–45 kg",loc:"Antarctica",note:"The largest penguin and deepest-diving bird. The only species to breed on winter sea ice; males incubate the egg for ~65 days without food."},
+ {n:"King",sci:"Aptenodytes patagonicus",g:"Aptenodytes",st:"LC",h:"85–95 cm",w:"9–16 kg",loc:"Sub-Antarctic isles",note:"Second-largest penguin. Carries its single egg on its feet and takes over a year to raise a chick, the longest of any penguin."},
+ {n:"Adélie",sci:"Pygoscelis adeliae",g:"Pygoscelis",st:"LC",h:"46–71 cm",w:"3–6 kg",loc:"Antarctic coast",note:"A true Antarctic resident, famous for building nests of small stones — which mates sometimes steal from each other."},
+ {n:"Gentoo",sci:"Pygoscelis papua",g:"Pygoscelis",st:"LC",h:"70–90 cm",w:"4.5–8.5 kg",loc:"Sub-Antarctic",note:"The fastest swimming bird on Earth (~36 km/h). Spot the white bonnet across the top of its head and the bright orange bill."},
+ {n:"Chinstrap",sci:"Pygoscelis antarcticus",g:"Pygoscelis",st:"LC",h:"68–76 cm",w:"3–5 kg",loc:"Antarctic isles",note:"Named for the thin black line under its chin. One of the most abundant Antarctic penguins, though many colonies are shrinking."},
+ {n:"Southern Rockhopper",sci:"Eudyptes chrysocome",g:"Eudyptes",st:"VU",h:"45–58 cm",w:"2–3.4 kg",loc:"Sub-Antarctic",note:"Red-eyed and spiky-crested, it hops between rocks instead of waddling. Some authorities split an Eastern rockhopper as a 19th species."},
+ {n:"Northern Rockhopper",sci:"Eudyptes moseleyi",g:"Eudyptes",st:"EN",h:"~55 cm",w:"~2.5 kg",loc:"Tristan / Gough",note:"A warmer-water rockhopper with longer yellow plumes, largely confined to a few South Atlantic and Indian Ocean islands."},
+ {n:"Macaroni",sci:"Eudyptes chrysolophus",g:"Eudyptes",st:"VU",h:"~70 cm",w:"~5 kg",loc:"Sub-Antarctic",note:"One of the most numerous penguins by raw numbers, yet declining. Named for the flamboyant orange-yellow crest of an 18th-century dandy."},
+ {n:"Royal",sci:"Eudyptes schlegeli",g:"Eudyptes",st:"NT",h:"65–75 cm",w:"~5 kg",loc:"Macquarie Island",note:"A white-faced cousin of the macaroni, breeding almost entirely on a single sub-Antarctic island south of Australia."},
+ {n:"Fiordland (Tawaki)",sci:"Eudyptes pachyrhynchus",g:"Eudyptes",st:"NT",h:"~55 cm",w:"~3.7 kg",loc:"New Zealand",note:"Nests in temperate rainforest on New Zealand's rugged southwest coast — one of the few penguins that breeds under trees."},
+ {n:"Snares",sci:"Eudyptes robustus",g:"Eudyptes",st:"VU",h:"~55 cm",w:"~3 kg",loc:"Snares Islands, NZ",note:"Breeds only on the tiny Snares Islands. A small total range keeps it perpetually vulnerable despite a fairly stable population."},
+ {n:"Erect-crested",sci:"Eudyptes sclateri",g:"Eudyptes",st:"EN",h:"~60 cm",w:"~4 kg",loc:"NZ sub-Antarctic",note:"Can raise and lower its brush-like yellow crest. Restricted to a couple of remote New Zealand island groups, and declining."},
+ {n:"African",sci:"Spheniscus demersus",g:"Spheniscus",st:"CR",h:"60–70 cm",w:"2.2–3.5 kg",loc:"South Africa & Namibia",note:"Africa's only penguin, and the first ever listed Critically Endangered (2024). Its braying call earns it the nickname 'jackass penguin'."},
+ {n:"Humboldt",sci:"Spheniscus humboldti",g:"Spheniscus",st:"VU",h:"56–70 cm",w:"~4 kg",loc:"Peru & Chile",note:"Lives along the cold, anchovy-rich Humboldt Current. Highly sensitive to El Niño events that scatter its food."},
+ {n:"Magellanic",sci:"Spheniscus magellanicus",g:"Spheniscus",st:"LC",h:"61–76 cm",w:"~4 kg",loc:"Southern S. America",note:"Burrow-nesting penguin of Patagonian coasts, with two black bands across its chest. Migrates north as far as Brazil in winter."},
+ {n:"Galápagos",sci:"Spheniscus mendiculus",g:"Spheniscus",st:"EN",h:"~49 cm",w:"1.7–2.5 kg",loc:"Galápagos (equator)",note:"The only penguin that lives north of the equator and the rarest Spheniscus, numbering only around a couple of thousand birds."},
+ {n:"Yellow-eyed (Hoiho)",sci:"Megadyptes antipodes",g:"Megadyptes",st:"EN",h:"62–79 cm",w:"5–6 kg",loc:"New Zealand",note:"One of the world's rarest penguins, with a pale yellow band running through its eyes. Sole living member of its genus."},
+ {n:"Little",sci:"Eudyptula minor",g:"Eudyptula",st:"LC",h:"30–40 cm",w:"~1 kg",loc:"Australia & NZ",note:"The smallest penguin — also called the little blue or fairy penguin for its slate-blue back. Comes ashore under cover of darkness."}
+];
+const GENERA=[
+ {g:"Aptenodytes",gloss:"'featherless diver'",desc:"The two giants — biggest bodies, deepest dives, no nest (egg carried on the feet).",m:["Emperor","King"]},
+ {g:"Pygoscelis",gloss:"'rump-legged' / brush-tailed",desc:"Mid-sized Antarctic and sub-Antarctic penguins with stiff, brush-like tails and pebble nests.",m:["Adélie","Gentoo","Chinstrap"]},
+ {g:"Eudyptes",gloss:"'good diver' — the crested penguins",desc:"The largest, most diverse branch: yellow-crested penguins of southern islands and coasts.",m:["Southern Rockhopper","Northern Rockhopper","Macaroni","Royal","Fiordland","Snares","Erect-crested"]},
+ {g:"Spheniscus",gloss:"'little wedge' — the banded penguins",desc:"Warm-water specialists with chest bands and burrows, reaching from Patagonia to the equator.",m:["African","Humboldt","Magellanic","Galápagos"]},
+ {g:"Megadyptes",gloss:"'large diver'",desc:"A single rare New Zealand species with a distinctive yellow eye-band.",m:["Yellow-eyed (Hoiho)"]},
+ {g:"Eudyptula",gloss:"'good little diver'",desc:"The smallest penguins — nocturnal, blue-backed, on Australian and New Zealand coasts.",m:["Little"]}
+];
+const ADAPT=[
+ {t:"Flippers, not wings",d:"Solid, flattened wing bones form rigid paddles. Penguins flap them to 'fly' underwater, powered by huge breast muscles.",icon:'<path d="M3 12c6-6 12-6 18 0-6 6-12 6-18 0z" fill="none" stroke="currentColor" stroke-width="2"/>'},
+ {t:"The densest feathers of any bird",d:"Short, stiff, overlapping feathers — packed extremely tightly — trap a layer of insulating air and supply most of a penguin's warmth.",icon:'<path d="M12 2v20M6 6l6 4 6-4M6 12l6 4 6-4" stroke="currentColor" stroke-width="2" fill="none"/>'},
+ {t:"Waterproofing oil",d:"A gland at the base of the tail produces oil that penguins spread over every feather while preening, sealing out the cold water.",icon:'<circle cx="12" cy="12" r="6" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="1.5" fill="currentColor"/>'},
+ {t:"Dense bones",d:"Unlike the hollow bones of flying birds, penguin bones are solid and heavy — ballast that helps them sink and dive with less effort.",icon:'<rect x="9" y="4" width="6" height="16" rx="3" fill="none" stroke="currentColor" stroke-width="2"/>'},
+ {t:"A salt gland",d:"A gland above the eyes filters salt from the blood so penguins can drink seawater; the concentrated brine drips out of the bill.",icon:'<path d="M12 3s6 7 6 11a6 6 0 01-12 0c0-4 6-11 6-11z" fill="none" stroke="currentColor" stroke-width="2"/>'},
+ {t:"Dive physiology",d:"Heart rate drops to a handful of beats per minute, muscles are loaded with oxygen-storing myoglobin, and lungs can partly collapse — stretching one breath for many minutes.",icon:'<path d="M3 12h4l2-5 3 10 2-5h7" fill="none" stroke="currentColor" stroke-width="2"/>'},
+ {t:"Countercurrent heat exchange",d:"Warm and cold blood vessels run side by side in the legs and flippers, recycling body heat before it's lost to the water or ice.",icon:'<path d="M9 3v18M15 3v18" stroke="currentColor" stroke-width="2"/><path d="M9 8h6M9 16h6" stroke="currentColor" stroke-width="1.5"/>'},
+ {t:"Huddling & tobogganing",d:"Behaviour counts too: emperors huddle by the thousand and rotate positions to share warmth, and many species slide on their bellies to save energy on ice.",icon:'<circle cx="7" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="14" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="12" r="2.5" fill="none" stroke="currentColor" stroke-width="2"/>'}
+];
+const SIZES=[
+ {n:"Emperor",cm:115,lab:"115 cm"},
+ {n:"King",cm:92,lab:"92 cm"},
+ {n:"Gentoo",cm:80,lab:"80 cm"},
+ {n:"African",cm:65,lab:"65 cm"},
+ {n:"Rockhopper",cm:52,lab:"52 cm"},
+ {n:"Little",cm:33,lab:"33 cm"}
+];
+const DEPTHS=[
+ {n:"Emperor",m:564},{n:"King",m:343},{n:"Gentoo",m:210},{n:"Adélie",m:180},{n:"African",m:130},{n:"Little",m:30}
+];
+const SPEEDS=[
+ {n:"Gentoo",v:36},{n:"Adélie",v:15},{n:"Chinstrap",v:13},{n:"Emperor",v:11},{n:"Best human",v:9,human:true}
+];
+const CYCLE=[
+ {no:"01",t:"Return & court",d:"Adults arrive at the colony, often reuniting with last year's mate through calls and display 'ecstatic' postures."},
+ {no:"02",t:"Nest",d:"Pebble ring, burrow, rocky hollow — or, for emperors and kings, no nest at all: the egg rides on the feet."},
+ {no:"03",t:"Lay",d:"Usually 1–2 whitish eggs. Emperors and kings lay a single egg; most others lay two."},
+ {no:"04",t:"Incubate",d:"Parents take turns for 30–64 days. In emperors the male alone incubates through the polar winter."},
+ {no:"05",t:"Hatch & brood",d:"Chicks hatch helpless. A parent shelters them while the other fetches food, returning to feed by regurgitation."},
+ {no:"06",t:"Crèche & fledge",d:"Older chicks gather in nursery groups (crèches) for warmth and safety, then moult into waterproof feathers and head to sea."}
+];
+const CONS=[{k:"LC",label:"Least Concern",c:"var(--ok)"},{k:"NT",label:"Near Threatened",c:"var(--near)"},{k:"VU",label:"Vulnerable",c:"var(--vuln)"},{k:"EN",label:"Endangered",c:"var(--end)"},{k:"CR",label:"Critically Endangered",c:"var(--crit)"}];
+const THREATS=[
+ {t:"Overfishing",d:"Boats scoop up the sardines, anchovies and krill penguins need, leaving colonies to starve.",icon:'<path d="M4 12c4-4 12-4 16 0-4 4-12 4-16 0z" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="8" cy="12" r="1" fill="currentColor"/>'},
+ {t:"Climate change",d:"Melting sea ice erases emperor and Adélie breeding grounds, while warming seas push prey out of reach.",icon:'<circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 1v3M12 20v3M1 12h3M20 12h3" stroke="currentColor" stroke-width="2"/>'},
+ {t:"Oil & plastic pollution",d:"A single oil spill can foul thousands of birds; plastic and chemicals poison food chains.",icon:'<path d="M12 3s6 7 6 11a6 6 0 01-12 0c0-4 6-11 6-11z" fill="currentColor" opacity=".7"/>'},
+ {t:"Invasive predators",d:"Rats, cats, stoats and dogs introduced by people raid nests on islands that had no land predators.",icon:'<path d="M5 15l3-8 4 5 4-5 3 8" fill="none" stroke="currentColor" stroke-width="2"/>'},
+ {t:"Disease",d:"Avian influenza and other diseases can sweep through dense colonies with devastating speed.",icon:'<circle cx="12" cy="12" r="8" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 8v4l3 2" stroke="currentColor" stroke-width="2" fill="none"/>'},
+ {t:"Habitat loss & disturbance",d:"Coastal development, guano removal and heavy tourism all chip away at safe places to breed.",icon:'<path d="M3 20h18M6 20V10l6-5 6 5v10" fill="none" stroke="currentColor" stroke-width="2"/>'}
+];
+const QUIZ=[
+ {q:"How many species of living penguin are usually recognised?",o:["6","18","40","102"],a:1,e:"There are about 18 living species (sources range 17–19) in 6 genera, all in the family Spheniscidae."},
+ {q:"Which is the only penguin that lives north of the equator?",o:["Emperor","African","Galápagos","Little"],a:2,e:"The Galápagos penguin is the only species found (barely) north of the equator, kept cool by cold ocean currents."},
+ {q:"Which penguin is the fastest swimmer — and fastest bird in water?",o:["Gentoo","Emperor","Chinstrap","King"],a:0,e:"The gentoo can reach about 36 km/h, making it the fastest-swimming bird on Earth."},
+ {q:"Roughly how deep was the deepest dive ever recorded for a penguin?",o:["60 m","150 m","320 m","564 m"],a:3,e:"An emperor penguin was recorded at 564 m — the deepest dive measured for any bird."},
+ {q:"During the Antarctic winter, who incubates the emperor penguin's egg?",o:["The female alone","The male alone","Both take turns","A crèche of chicks"],a:1,e:"The male alone incubates the single egg on his feet for about 65 days, fasting the whole time, while the female feeds at sea."},
+ {q:"Which penguin became the first ever listed as Critically Endangered (2024)?",o:["Emperor","Yellow-eyed","African","Macaroni"],a:2,e:"The African penguin was uplisted to Critically Endangered in 2024 after losing about 97% of its population."},
+ {q:"What is a 'crèche' in penguin life?",o:["A pebble nest","A group of young chicks huddled together","A courtship dance","A salt gland"],a:1,e:"A crèche is a nursery group of chicks that huddle for warmth and protection while parents forage."},
+ {q:"Why are penguins dark on the back and white on the belly?",o:["To attract mates","Countershading camouflage","To store heat","Random variation"],a:1,e:"Countershading hides them from predators: the dark back blends with deep water seen from above, the white belly with bright sky seen from below."}
+];
+
+/* ========== HELPERS ========== */
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const el=(t,c,h)=>{const e=document.createElement(t);if(c)e.className=c;if(h!=null)e.innerHTML=h;return e;};
+const STLABEL={LC:"Least Concern",NT:"Near Threatened",VU:"Vulnerable",EN:"Endangered",CR:"Critically Endangered"};
+
+/* ========== NAV ========== */
+const tabs=$$('.tab');
+function show(id){
+  $$('.chapter').forEach(c=>c.classList.toggle('active',c.id===id));
+  tabs.forEach(t=>t.setAttribute('aria-selected',t.dataset.tab===id));
+  window.scrollTo({top:0,behavior:'instant' in window?'instant':'auto'});
+  if(id==='records')animateRecords();
+  if(id==='conserve')animateCons();
+}
+tabs.forEach(t=>t.addEventListener('click',()=>show(t.dataset.tab)));
+
+/* jump between tabs from inside content */
+document.addEventListener('click',e=>{const g=e.target.closest('[data-goto]');if(g){e.preventDefault();show(g.dataset.goto);}});
+
+/* ========== SPECIES EXPLORER ========== */
+const grid=$('#speciesGrid');
+/* Wikipedia pages carry real, freely-licensed photos of every species */
+const WIKI={"Emperor":"Emperor_penguin","King":"King_penguin","Adélie":"Ad%C3%A9lie_penguin","Gentoo":"Gentoo_penguin","Chinstrap":"Chinstrap_penguin","Southern Rockhopper":"Southern_rockhopper_penguin","Northern Rockhopper":"Northern_rockhopper_penguin","Macaroni":"Macaroni_penguin","Royal":"Royal_penguin","Fiordland (Tawaki)":"Fiordland_penguin","Snares":"Snares_penguin","Erect-crested":"Erect-crested_penguin","African":"African_penguin","Humboldt":"Humboldt_penguin","Magellanic":"Magellanic_penguin","Galápagos":"Galapagos_penguin","Yellow-eyed (Hoiho)":"Yellow-eyed_penguin","Little":"Little_penguin"};
+/* species you can currently watch on a live cam (see Watch Live tab) */
+const LIVESET=new Set(["African","King","Adélie","Gentoo","Chinstrap","Macaroni","Southern Rockhopper","Little"]);
+function silSVG(size){return `<svg class="sil" viewBox="0 0 100 160" style="width:${size}px;height:${size}px"><use href="#peng" fill="#12405e"/></svg>`;}
+function renderSpecies(filter){
+  grid.innerHTML='';
+  SPECIES.filter(s=>filter==='All'||s.g===filter||filter===s.st).forEach(s=>{
+    const card=el('div','card sp');
+    card.innerHTML=`
+      <div class="top">
+        <div><h3>${s.n}</h3><div class="sci">${s.sci}</div></div>
+        ${silSVG(44)}
+      </div>
+      <div class="genus">${s.g}</div>
+      <div style="margin-top:.5rem"><span class="status s-${s.st}"><span class="dot"></span>${STLABEL[s.st]}</span></div>
+      <div class="facts">
+        <div>Height<br><b>${s.h}</b></div>
+        <div>Weight<br><b>${s.w}</b></div>
+        <div style="grid-column:1/3">Home<br><b>${s.loc}</b></div>
+      </div>
+      <div class="blurb">${s.note}</div>
+      <div class="sp-links">
+        <a class="sp-photo" href="https://en.wikipedia.org/wiki/${WIKI[s.n]}" target="_blank" rel="noopener">View photos ↗</a>
+        ${LIVESET.has(s.n)?`<button class="sp-live" data-goto="watch"><span class="live-dot"></span>LIVE CAM</button>`:''}
+      </div>`;
+    grid.appendChild(card);
+  });
+}
+const filterBar=$('#genusFilters');
+const FILTERS=['All','Aptenodytes','Pygoscelis','Eudyptes','Spheniscus','Megadyptes','Eudyptula','CR','EN','VU'];
+const FLABEL={All:'All 18',CR:'⚠ Critically Endangered',EN:'Endangered',VU:'Vulnerable'};
+FILTERS.forEach((f,i)=>{
+  const b=el('button','chip',FLABEL[f]||f);
+  b.setAttribute('aria-pressed',i===0);
+  b.onclick=()=>{$$('.chip',filterBar).forEach(c=>c.setAttribute('aria-pressed','false'));b.setAttribute('aria-pressed','true');renderSpecies(f);};
+  filterBar.appendChild(b);
+});
+renderSpecies('All');
+
+/* ========== FAMILY TREE ========== */
+const tree=$('#treeRoot');
+GENERA.forEach(gn=>{
+  const b=el('div','branch');
+  b.innerHTML=`<div class="gname">${gn.g} <i>${gn.gloss}</i></div>
+    <div class="gmeta">${gn.desc} · ${gn.m.length} species</div>
+    <div class="members">${gn.m.map(m=>`<span>${m}</span>`).join('')}</div>`;
+  tree.appendChild(b);
+});
+
+/* ========== ADAPTATIONS ========== */
+const al=$('#adaptList');
+ADAPT.forEach(a=>{
+  const d=el('div','adapt');
+  d.innerHTML=`<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${a.icon}</svg><div><h4>${a.t}</h4><p>${a.d}</p></div>`;
+  al.appendChild(d);
+});
+
+/* ========== SIZE COMPARISON ========== */
+const stage=$('#sizeStage');
+const MAXPX=270, MAXCM=170;
+[{n:"Human",cm:170,lab:"1.7 m",human:true},...SIZES].forEach(s=>{
+  const px=Math.round(s.cm/MAXCM*MAXPX);
+  const item=el('div','size-item');
+  if(s.human){
+    item.innerHTML=`<svg viewBox="0 0 40 120" style="width:${px*.32}px;height:${px}px" aria-hidden="true">
+      <circle cx="20" cy="14" r="9" fill="#2a5470"/>
+      <rect x="12" y="24" width="16" height="50" rx="7" fill="#2a5470"/>
+      <rect x="14" y="72" width="5" height="44" rx="2" fill="#2a5470"/>
+      <rect x="21" y="72" width="5" height="44" rx="2" fill="#2a5470"/></svg>
+      <div class="lab">${s.n}</div><div class="h">${s.lab}</div>`;
+  }else{
+    item.innerHTML=`<svg viewBox="0 0 100 160" style="width:${px*.62}px;height:${px}px" aria-hidden="true"><use href="#peng" fill="#12405e"/><circle cx="62" cy="34" r="5" fill="#f4b642"/></svg>
+      <div class="lab">${s.n}</div><div class="h">${s.lab}</div>`;
+  }
+  stage.appendChild(item);
+});
+
+/* ========== DEPTH CHART ========== */
+const depthChart=$('#depthChart');
+const MAXDEPTH=564;
+DEPTHS.forEach(d=>{
+  const row=el('div','depth-row');
+  row.innerHTML=`<div class="name">${d.n}</div>
+    <div class="depth-bar"><div class="depth-fill" data-w="${(d.m/MAXDEPTH*100).toFixed(1)}"></div></div>
+    <div class="depth-val">${d.m} m</div>`;
+  depthChart.appendChild(row);
+});
+/* ========== SPEED CHART ========== */
+const speedChart=$('#speedChart');
+const MAXSPD=36;
+SPEEDS.forEach(s=>{
+  const row=el('div','speed-row');
+  row.innerHTML=`<div class="name" style="${s.human?'color:var(--gold)':''}">${s.n}</div>
+    <div class="speed-track"><div class="speed-fill" data-w="${(s.v/MAXSPD*100).toFixed(0)}" style="${s.human?'background:var(--gold)':''}"></div></div>
+    <div class="speed-val">${s.v} km/h</div>`;
+  speedChart.appendChild(row);
+});
+let recordsAnimated=false;
+function animateRecords(){
+  if(recordsAnimated)return;recordsAnimated=true;
+  requestAnimationFrame(()=>{
+    $$('.depth-fill').forEach(f=>f.style.width=f.dataset.w+'%');
+    $$('.speed-fill').forEach(f=>f.style.width=f.dataset.w+'%');
+  });
+}
+
+/* ========== LIFE CYCLE ========== */
+const cyc=$('#cycleRoot');
+CYCLE.forEach(c=>{
+  const s=el('div','stage');
+  s.innerHTML=`<div class="no">${c.no}</div><h4>${c.t}</h4><p>${c.d}</p>`;
+  cyc.appendChild(s);
+});
+
+/* ========== MAP POINTS ========== */
+const mp=$('#mapPoints');
+const POINTS=[
+ {x:160,y:120,c:"var(--ice)"},{x:180,y:135,c:"var(--ice)"},   // Antarctica
+ {x:145,y:210,c:"var(--current)"},{x:205,y:205,c:"var(--current)"},{x:250,y:220,c:"var(--current)"}, // sub-antarctic isles
+ {x:150,y:70,c:"var(--gold)"},{x:216,y:78,c:"var(--gold)"},{x:255,y:205,c:"var(--gold)"},{x:262,y:238,c:"var(--gold)"}, // temperate
+ {x:158,y:66,c:"var(--coral)"} // equator galapagos
+];
+POINTS.forEach(p=>{
+  mp.innerHTML+=`<circle cx="${p.x}" cy="${p.y}" r="4.5" fill="${p.c}"><animate attributeName="opacity" values="1;.4;1" dur="2.5s" repeatCount="indefinite"/></circle>`;
+});
+
+/* ========== CONSERVATION BARS ========== */
+const consBars=$('#consBars');
+CONS.forEach(c=>{
+  const count=SPECIES.filter(s=>s.st===c.k).length;
+  const row=el('div','cbar');
+  row.innerHTML=`<div class="cl">${c.label}</div>
+    <div class="ct"><div class="cf" data-w="${(count/18*100).toFixed(0)}" style="background:${c.c}"></div></div>
+    <div class="cn">${count}</div>`;
+  consBars.appendChild(row);
+});
+let consAnimated=false;
+function animateCons(){
+  if(consAnimated)return;consAnimated=true;
+  requestAnimationFrame(()=>$$('.cf').forEach(f=>f.style.width=f.dataset.w+'%'));
+}
+/* threats */
+const tr=$('#threatsRoot');
+THREATS.forEach(t=>{
+  const c=el('div','card threat');
+  c.innerHTML=`<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">${t.icon}</svg><h4>${t.t}</h4><p>${t.d}</p>`;
+  tr.appendChild(c);
+});
+
+/* ========== WATCH LIVE ========== */
+const CAMS=[
+ {name:"California Academy of Sciences",loc:"San Francisco, USA",shows:"A colony of <b>African penguins</b> on three HD cams, including a colony view and an underwater view.",tip:"Live keeper feeds around 10:30am & 3pm Pacific.",url:"https://www.calacademy.org/learn-explore/animal-webcams/live-penguin-cams"},
+ {name:"SeaWorld San Diego",loc:"San Diego, USA",shows:"The best multi-species view: <b>King, Adélie, Gentoo, Chinstrap and Macaroni</b> penguins together.",tip:"Lighting mimics the real Antarctic winter–summer cycle.",url:"https://seaworld.com/san-diego/live-cameras/penguins/"},
+ {name:"New England Aquarium",loc:"Boston, USA",shows:"A big colony of <b>African</b> and <b>Southern rockhopper</b> penguins — one of the few cams with rockhoppers.",tip:"",url:"https://www.neaq.org/visit/penguin-webcam/"},
+ {name:"Birch Aquarium at Scripps",loc:"San Diego, USA",shows:"<b>Little (little blue) penguins</b> — the world's smallest species — in burrows, on a beach, and in an 18,000-gallon pool.",tip:"",url:"https://aquarium.ucsd.edu/cams/penguin-cam"},
+ {name:"Georgia Aquarium",loc:"Atlanta, USA",shows:"<b>African penguins</b> in a habitat recreating the coast of southwestern Africa.",tip:"",url:"https://www.georgiaaquarium.org/webcam/african-penguin-cam/"},
+ {name:"explore.org — Penguins",loc:"Live cam network",shows:"A rotating hub of live penguin cams from partner facilities — the best place to find a working stream if any cam above is down.",tip:"Worth bookmarking as a backup.",url:"https://explore.org/livecams/penguins"}
+];
+const camGrid=$('#camGrid');
+CAMS.forEach(c=>{
+  const card=el('div','card cam');
+  card.innerHTML=`
+    <div class="cam-top">
+      <div><div class="loc">${c.loc}</div><h3>${c.name}</h3></div>
+      <span class="live-badge"><span class="live-dot"></span>LIVE</span>
+    </div>
+    <div class="shows">${c.shows}</div>
+    ${c.tip?`<div class="muted" style="font-size:.78rem">${c.tip}</div>`:''}
+    <a class="watch-btn" href="${c.url}" target="_blank" rel="noopener">Watch live ↗</a>`;
+  camGrid.appendChild(card);
+});
+
+/* ========== QUIZ ========== */
+const quizRoot=$('#quizRoot');
+let answered=0,correct=0;
+QUIZ.forEach((q,i)=>{
+  const card=el('div','q');
+  card.innerHTML=`<div class="qh">QUESTION ${i+1} / ${QUIZ.length}</div><div class="qt">${q.q}</div>`;
+  const opts=el('div','opts');
+  q.o.forEach((o,j)=>{
+    const btn=el('button','opt',o);
+    btn.onclick=()=>{
+      if(card.dataset.done)return;
+      card.dataset.done=1;answered++;
+      $$('.opt',opts).forEach(b=>b.disabled=true);
+      if(j===q.a){btn.classList.add('correct');correct++;}
+      else{btn.classList.add('wrong');$$('.opt',opts)[q.a].classList.add('correct');}
+      $('.explain',card).classList.add('show');
+      if(answered===QUIZ.length)finishQuiz();
+    };
+    opts.appendChild(btn);
+  });
+  card.appendChild(opts);
+  card.appendChild(el('div','explain',`<b style="color:var(--ice)">Why:</b> ${q.e}`));
+  quizRoot.appendChild(card);
+});
+function finishQuiz(){
+  const sc=$('#scorecard');
+  $('#scoreNum').textContent=`${correct}/${QUIZ.length}`;
+  const pct=correct/QUIZ.length;
+  $('#scoreMsg').textContent=pct===1?"Perfect run. You're an honorary member of the colony. 🐧":
+    pct>=.6?"Strong work — you've got the penguin fundamentals down.":
+    "A fine start. Waddle back through the chapters and try again.";
+  sc.classList.add('show');
+  sc.scrollIntoView({behavior:'smooth',block:'center'});
+}
+</script>
+</body>
+</html>
